@@ -1,14 +1,12 @@
 package application
 
-import initial.DataInit
+import initial.{DataInit, SparkInit}
 
 /**
   * Точка входа в приложение
   */
 object Job {
   def main(args: Array[String]) {
-    DataInit.initDataBase()
-    DataInit.initCsv()
-    DataInit.initSpark()
+    val sc = SparkInit.getSparkContext
   }
 }
