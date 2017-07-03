@@ -5,6 +5,7 @@ import java.io.File
 import com.github.tototoshi.csv.CSVReader
 import com.mongodb.casbah.MongoClient
 import com.mongodb.casbah.commons.MongoDBObject
+import org.apache.spark.{SparkConf, SparkContext}
 
 /**
   *
@@ -18,6 +19,17 @@ object DataInit {
     println(info.take(5))
 
     reader.close()
+  }
+
+  def initSpark(): Unit ={
+    val logFile = "README.md" // Should be some file on your system
+    val conf = new SparkConf().setMaster("local").setAppName("Simple Application")
+    val sc = new SparkContext(conf)
+    val logData = sc.textFile(logFile, 2).cache()
+    val numAs = logData.filter(line => line.contains("a")).count()
+    val numBs = logData.filter(line => line.contains("b")).count()
+    println(s"Lines with a: $numAs, Lines with b: $numBs")
+    sc.stop()
   }
 
   def initDataBase(): Unit = {
