@@ -1,7 +1,7 @@
 package application
 
 import initial.{DataInit, SparkInit}
-import utils.SparkUtils
+import utils.{DataUtils, SparkUtils}
 
 /**
   * Точка входа в приложение
@@ -18,9 +18,12 @@ import utils.SparkUtils
   */
 object Job {
   def main(args: Array[String]) {
-    val df = DataInit.loadDataWithBothSexes(SparkInit.getSparkSession)
-    val new_df = df.select("value")
-    println("\n\n")
-    new_df.rdd.take(5).foreach(println)
+//    val df = DataInit.loadDataWithBothSexes(SparkInit.getSparkSession)
+//    val new_df = df.select("value")
+//    println("\n\n")
+//    new_df.rdd.take(5).foreach(println)
+    val all_df = DataInit.loadDataWithBothSexes(SparkInit.getSparkSession)
+    val df = DataUtils.groupByCountries(all_df)
+    df.take(5).foreach(println)
   }
 }

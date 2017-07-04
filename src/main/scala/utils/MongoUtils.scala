@@ -5,7 +5,7 @@ import com.mongodb.casbah.commons.MongoDBObject
 /**
   * Некоторый функционал по работе с MongoDB
   */
-object DatabaseUtils {
+object MongoUtils {
   def testDatabase(): Unit = {
     val obj = MongoDBObject("foo" -> "bar",
       "x" -> "y",
