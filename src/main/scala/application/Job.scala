@@ -1,7 +1,7 @@
 package application
 
 import initial.{DataInit, SparkInit}
-import utils.{DataUtils, SparkUtils}
+import utils.{SparkUtils}
 
 /**
   * Точка входа в приложение
@@ -19,7 +19,10 @@ import utils.{DataUtils, SparkUtils}
 object Job {
   def main(args: Array[String]) {
     val all_df = DataInit.loadDataWithBothSexes(SparkInit.getSparkSession)
-    val million_population_cities = SparkUtils.getTop5_byCountries(all_df)
-    million_population_cities.take(5) foreach println
+    val million_population_cities = SparkUtils.getCitiesWithMillionPopulation(all_df)
+    println(million_population_cities.count())
+    val res = million_population_cities.collect()
+    println(res.length)
+    for (el <- res.take(5)) println(el)
   }
 }
