@@ -5,6 +5,8 @@ import utils.SparkUtils
 
 /**
   * Точка входа в приложение
+  *
+  * Здесь будет условие
   */
 object Job {
   def main(args: Array[String]) {
