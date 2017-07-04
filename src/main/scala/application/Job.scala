@@ -19,10 +19,13 @@ import utils.{SparkUtils}
 object Job {
   def main(args: Array[String]) {
     val all_df = DataInit.loadDataWithBothSexes(SparkInit.getSparkSession)
+
     val million_population_cities = SparkUtils.getCitiesWithMillionPopulation(all_df)
-    println(million_population_cities.count())
-    val res = million_population_cities.collect()
-    println(res.length)
-    for (el <- res.take(5)) println(el)
+    println("Количество городов миллионников: " + million_population_cities.count())
+    for (el <- million_population_cities.take(5)) println("Пример городов миллионников: " + el)
+
+    val population_by_countries = SparkUtils.getCountiesPopulation(all_df)
+    println("Количество стран: " + population_by_countries.count())
+    for (el <- population_by_countries.take(5)) println("Население страны: " + el)
   }
 }

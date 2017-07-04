@@ -10,4 +10,8 @@ object SparkUtils {
   def getCitiesWithMillionPopulation(allData: DataFrame): RDD[(Any, List[Any])] = {
     DataUtils.getCitiesWithPopulationMoreThan(all_data = allData, 1000)
   }
+
+  def getCountiesPopulation(allData: DataFrame): RDD[(Any, Any)] = {
+    DataUtils.getPupulationOfCountries(allData)
+  }
 }

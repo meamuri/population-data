@@ -108,4 +108,18 @@ object DataUtils {
     }).groupByKey()
   }
 
+  def getPupulationOfCountries(all_data: DataFrame): RDD[(Any, Any)] = {
+    val countriesWithFull = getAllCities(all_data).map(el => {
+      (el._2.head, el._2(1)) // list(1) - название города, list(2) - население
+    }).groupByKey()
+
+    countriesWithFull.mapValues(list => {
+      var sum = 0.0
+      for (el <- list) {
+        val people_in_city = try { el.toString.toDouble } catch { case _ => 0.0 }
+        sum += people_in_city
+      }
+      sum
+    })
+  }
 }
