@@ -3,7 +3,7 @@ package utils
 import com.mongodb.casbah.commons.MongoDBObject
 
 /**
-  * Created by meamuri on 03.07.17.
+  * Некоторый функционал по работе с MongoDB
   */
 object DatabaseUtils {
   def testDatabase(): Unit = {

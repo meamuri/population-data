@@ -1,7 +1,6 @@
 package initial
 
 import com.mongodb.casbah.MongoClient
-import com.mongodb.casbah.commons.MongoDBObject
 
 /**
   * инициализация noSQL базы данных MongoDB

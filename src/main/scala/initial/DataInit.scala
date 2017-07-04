@@ -1,7 +1,5 @@
 package initial
 
-import java.io.File
-
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
 /**
