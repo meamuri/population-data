@@ -19,7 +19,7 @@ import utils.{DataUtils, SparkUtils}
 object Job {
   def main(args: Array[String]) {
     val all_df = DataInit.loadDataWithBothSexes(SparkInit.getSparkSession)
-    val df = DataUtils.getAllCitiesRows(all_df)
-    df.take(5) foreach println
+    val million_population_cities = SparkUtils.getTop5_byCountries(all_df)
+    million_population_cities.take(5) foreach println
   }
 }
