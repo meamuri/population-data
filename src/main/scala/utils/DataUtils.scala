@@ -31,10 +31,8 @@ object DataUtils {
     var max_y =  0
     for (e <- l) {
       // смотрим, на какой год рассматриваемые данные актуальны
-      val curr_year = e(1) match {
-        case Some(x: Int) => x // this extracts the value in a as an Int
-        case _ => 0
-      }
+      val curr_year = try { e(1).toString.toInt } catch { case _ => 0 }
+
       // если рассматриваемые данные более актуальные, чем уже принятые
       // за наиболее свежие, меняем хранимый в переменной результата набор
       if (curr_year > max_y) {
@@ -83,11 +81,9 @@ object DataUtils {
     all_data.select("Country or Area", "City", "Year", "Value")
       .rdd
       .filter(info => {
-        val value = info(3) match { // info(3) - Value, i.  e. population
-          case Some(inner: Double) => inner
-          case _ => 0
-        }
-        value > population * 1000
+        val level = population * 1000
+        val value = try { info(3).toString.toDouble } catch { case _ => 0.0 }
+        value > level
       }) // сразу отбрасываем записи, в которых население меньше чем population*1000
       .map(x => (x(1), List(x(0), x(2), x(3))))
       .groupByKey()
