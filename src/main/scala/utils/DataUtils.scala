@@ -5,9 +5,6 @@ import org.apache.spark.sql.{DataFrame, RelationalGroupedDataset}
 
 import scala.util.Try
 
-// This import is needed to use the $-notation
-//import org.apache.spark.implicits._
-
 /**
   * Модуль для работы с данными
   */
@@ -110,7 +107,14 @@ object DataUtils {
     }).groupByKey()
   }
 
-  def getPupulationOfCountries(all_data: DataFrame): RDD[(Any, Any)] = {
+  /**
+    * Функция считает, какое население каждой страны по данным о населении городов
+    * @param all_data SQL-подобный объект DataFrame,
+    *                 позволяющий выбрать актуальные записи и лишь необходимые поля:
+    * @return возвращает набор отображений
+    * (название страны => население страны )
+    */
+  def getPopulationOfCountries(all_data: DataFrame): RDD[(Any, Any)] = {
     val countriesWithFull = getAllCities(all_data).map(el => {
       (el._2.head, el._2(1)) // list(1) - название города, list(2) - население
     }).groupByKey()
@@ -123,5 +127,6 @@ object DataUtils {
       }
       sum
     })
-  }
-}
+  } // ... def getPopulationOfCountries
+
+} // ...obj DataUtils

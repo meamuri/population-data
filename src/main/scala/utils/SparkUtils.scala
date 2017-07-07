@@ -12,6 +12,6 @@ object SparkUtils {
   }
 
   def getCountiesPopulation(allData: DataFrame): RDD[(Any, Any)] = {
-    DataUtils.getPupulationOfCountries(allData)
+    DataUtils.getPopulationOfCountries(allData)
   }
 }

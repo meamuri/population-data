@@ -1,7 +1,7 @@
 package application
 
 import initial.{DataInit, SparkInit}
-import utils.{SparkUtils}
+import utils.SparkUtils
 
 /**
   * Точка входа в приложение
@@ -17,6 +17,14 @@ import utils.{SparkUtils}
   *
   */
 object Job {
+  /**
+    *
+    * @param args args(1) путь до папки, содержащий два файла:
+    *             1. unsd-citypopulation-year-both.csv
+    *             2. unsd-citypopulation-year-both.csv
+    *             Если параметр пуст, пытаемся подставить './data'
+    *             В любом случае проверяем наличие файлов в переданной папке
+    */
   def main(args: Array[String]) {
     println("args.len & args: ", args.length, args.toString)
     val all_df = DataInit.loadDataWithBothSexes(SparkInit.getSparkSession)
