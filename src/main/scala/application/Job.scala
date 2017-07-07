@@ -36,5 +36,9 @@ object Job {
     val population_by_countries = SparkUtils.getCountiesPopulation(all_df)
     println("Количество стран: " + population_by_countries.count())
     for (el <- population_by_countries.take(5)) println("Население страны: " + el)
+
+//    val top5 = SparkUtils.getTop5_cities(all_df)
+//    println("Количество стран: " + top5.count())
+//    for (el <- top5.take(5)) println("Топ 5 по 5: " + el)
   }
 }

@@ -14,4 +14,8 @@ object SparkUtils {
   def getCountiesPopulation(allData: DataFrame): RDD[(Any, Any)] = {
     DataUtils.getPopulationOfCountries(allData)
   }
+
+  def getTop5_cities(allData: DataFrame): RDD[(Any, Iterable[List[Any]])] = {
+    DataUtils.getTopNByCountries(allData, 5)
+  }
 }

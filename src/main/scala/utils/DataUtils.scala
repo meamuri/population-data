@@ -103,7 +103,7 @@ object DataUtils {
     */
   def getActualInfoByCountries(all_data: DataFrame): RDD[(Any, Iterable[List[Any]])] = {
     getAllCities(all_data).map(el => {
-      (el._2.head, List(el._1, el._2(2))) // list(1) - название города, list(2) - население
+      (el._2.head, List(el._1, el._2(2))) // list(0) - название города, list(1) - население
     }).groupByKey()
   }
 
@@ -128,5 +128,16 @@ object DataUtils {
       sum
     })
   } // ... def getPopulationOfCountries
+
+  def getTopNByCountries(all_data: DataFrame, top: Int): RDD[(Any, Iterable[List[Any]])] = {
+    val info = getAllCities(all_data).map(el => {
+      (el._2.head, List(el._1, el._2(2))) // list(0) - название города, list(1) - население
+    }).groupByKey()
+
+    info.mapValues(list => {
+      val res = list.toList
+      res.sortBy(k => Try(k(1).toString.toDouble).getOrElse(0.0)).take(top)
+    })
+  }
 
 } // ...obj DataUtils
