@@ -1,6 +1,7 @@
 package utils
 
-import dao.City
+import dao.PartOfPeople.PartOfPeople
+import dao.{City, PartOfPeople}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 
@@ -25,9 +26,22 @@ class SparkUtils(all_data: DataFrame) {
     countriesWithTopN(cities, 5)
   }
 
-//  def getRatio(data_by_sexes: DataFrame): RDD[(String, Double)] = {
-//
-//  }
+  def getRatio(data_by_sexes: DataFrame): RDD[(String, Double)] = {
+    val cities = DataUtils.getCitiesBothSexes(data_by_sexes)
+    cities.map(city => (city.country, city))
+      .groupByKey()
+      .mapValues(cities_of_country => {
+        var male = 0.0
+        var female = 0.0
+        for (c <- cities_of_country) {
+          if (c.sex == 'm') {
+            male = male + c.population
+          } else{
+            female = female + c.population}
+        }
+        male / female
+      })
+  }
 
   private def groupCitiesByCountries(cities: RDD[City]): RDD[(String, Iterable[City])] = {
     cities.map(city => (city.country, city)).groupByKey()

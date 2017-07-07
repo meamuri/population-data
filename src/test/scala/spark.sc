@@ -11,4 +11,4 @@ val session = SparkSession.builder()
   .getOrCreate()
 
 val df = new DataInit(session).loadDataWithDiffSexes()
-val actual = df.select("Country or Area", "City", "Year", "Value", "Sex")
+//val actual = DataUtils.get

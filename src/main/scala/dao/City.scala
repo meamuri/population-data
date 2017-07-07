@@ -10,5 +10,5 @@ case class City (
                   name: String,
                   year: Int,
                   population: Double,
-                  part: PartOfPeople = PartOfPeople.both
+                  sex: Char = 'b'
                 )

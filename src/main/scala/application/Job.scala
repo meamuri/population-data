@@ -37,11 +37,15 @@ object Job {
     for (el <- million_population_cities.take(5)) println("Пример городов миллионников: " + el)
 
     val population_by_countries = worker.getCountiesPopulation
-    println("Количество стран: " + population_by_countries.count())
+    println("Количество стран с миллионниками: " + population_by_countries.count())
     for (el <- population_by_countries.take(5)) println("Население страны: " + el)
 
     val top5 = worker.getTop5_cities
-    println("Количество стран: " + top5.count())
+    println("Количество стран с топом: " + top5.count())
     for (el <- top5.take(5)) println("Топ 5 по 5: " + el)
+
+    val ratio = worker.getRatio(loader.loadDataWithDiffSexes())
+    println("Количество стран с рейтингом: " + ratio.count())
+    for (el <- ratio.take(5)) println("Соотношение: " + el)
   }
 }
