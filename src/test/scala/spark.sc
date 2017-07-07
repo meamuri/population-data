@@ -1,9 +1,14 @@
 
+import initial.DataInit
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
 val conf = new SparkConf().setMaster("local").setAppName("Simple Application")
 val sc = new SparkContext(conf)
 val session = SparkSession.builder()
+  .config(conf=conf)
+  .appName("spark session")
+  .getOrCreate()
 
-val abc = sc.parallelize(List("1", "2", "3"))
+val df = new DataInit(session).loadDataWithDiffSexes()
+val actual = df.select("Country or Area", "City", "Year", "Value", "Sex")
