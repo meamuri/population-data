@@ -51,4 +51,11 @@ object SparkUtils {
       .groupByKey()
       .mapValues(all_populations => all_populations.sum)
   }
+
+  def countriesWithTopN(cities: RDD[City], n: Int = 5): RDD[(String, Iterable[City])] = {
+    val countries = cities.map(city => (city.country, city)).groupByKey()
+    countries.mapValues(cities_of_country => {
+      cities_of_country.toList.sortBy(city => city.population).take(n)
+    })
+  }
 }
