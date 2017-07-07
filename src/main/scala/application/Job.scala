@@ -26,19 +26,22 @@ object Job {
     *             В любом случае проверяем наличие файлов в переданной папке
     */
   def main(args: Array[String]) {
-    println("args.len & args: ", args.length, args.toString)
-    val all_df = DataInit.loadDataWithBothSexes(SparkInit.getSparkSession)
+    val path = if (args.length == 0) { "data" } else { args(0) }
+    val loader = new DataInit(SparkInit.getSparkSession, path)
+    val all_df = loader.loadDataWithBothSexes()
 
-    val million_population_cities = SparkUtils.getCitiesWithMillionPopulation(all_df)
+    val worker = new SparkUtils(all_df)
+
+    val million_population_cities = worker.getCitiesWithMillionPopulation
     println("Количество городов миллионников: " + million_population_cities.count())
     for (el <- million_population_cities.take(5)) println("Пример городов миллионников: " + el)
 
-    val population_by_countries = SparkUtils.getCountiesPopulation(all_df)
+    val population_by_countries = worker.getCountiesPopulation
     println("Количество стран: " + population_by_countries.count())
     for (el <- population_by_countries.take(5)) println("Население страны: " + el)
 
-//    val top5 = SparkUtils.getTop5_cities(all_df)
-//    println("Количество стран: " + top5.count())
-//    for (el <- top5.take(5)) println("Топ 5 по 5: " + el)
+    val top5 = worker.getTop5_cities
+    println("Количество стран: " + top5.count())
+    for (el <- top5.take(5)) println("Топ 5 по 5: " + el)
   }
 }

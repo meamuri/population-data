@@ -9,17 +9,47 @@ import scala.util.Try
 /**
   * Работа со Spark
   */
-object SparkUtils {
-  def getCitiesWithMillionPopulation(allData: DataFrame): RDD[(Any, List[Any])] = {
-    DataUtils.getCitiesWithPopulationMoreThan(all_data = allData, 1000)
+class SparkUtils(all_data: DataFrame) {
+  private val cities = UsefulInitializer.getCities(all_data)
+
+  def getCitiesWithMillionPopulation: RDD[(String, Iterable[City])] = {
+    val filtered_rows = filterByPopulation(cities, 1000)
+    groupCitiesByCountries(filtered_rows)
   }
 
-  def getCountiesPopulation(allData: DataFrame): RDD[(Any, Any)] = {
-    DataUtils.getPopulationOfCountries(allData)
+  def getCountiesPopulation: RDD[(String, Double)] = {
+    countriesPopulation(cities)
   }
 
-  def getTop5_cities(allData: DataFrame): RDD[(Any, Iterable[List[Any]])] = {
-    DataUtils.getTopNByCountries(allData, 5)
+  def getTop5_cities: RDD[(String, Iterable[City])] = {
+    countriesWithTopN(cities, 5)
+  }
+
+  private def groupCitiesByCountries(cities: RDD[City]): RDD[(String, Iterable[City])] = {
+    cities.map(city => (city.country, city)).groupByKey()
+  }
+
+  private def filterByPopulation(cities: RDD[City], level: Int = 100): RDD[City] = {
+    cities.filter(city => city.population > level * 1000)
+  }
+
+  private def countriesPopulation(cities: RDD[City]): RDD[(String, Double)] = {
+    cities.map(city => (city.country, city.population))
+      .groupByKey()
+      .mapValues(all_populations => all_populations.sum)
+  }
+
+  private def countriesWithTopN(cities: RDD[City], n: Int = 1): RDD[(String, Iterable[City])] = {
+    val countries = cities.map(city => (city.country, city)).groupByKey()
+    countries.mapValues(cities_of_country => {
+      cities_of_country.toList.sortBy(city => city.population).take(n)
+    })
+  }
+}
+
+private object UsefulInitializer {
+  def getCities(all_data: DataFrame): RDD[City] = {
+    selectUsefulRows(selectUsefulData(all_data))
   }
 
   private def selectUsefulData(all_data: DataFrame): RDD[City] = {
@@ -35,27 +65,12 @@ object SparkUtils {
     val tmp = data.map(city => (city.name, city))
       .groupByKey()
     val res = if (year == -1) {
-        tmp.mapValues(cities => cities.maxBy(_.year))
-      } else {
-        tmp.mapValues(cities => cities.find(city => city.year == year).getOrElse(cities.head))
-      }
+      tmp.mapValues(cities => cities.maxBy(_.year))
+    } else {
+      tmp.mapValues(cities => cities.find(city => city.year == year).getOrElse(cities.head))
+    }
     res.map(pair => pair._2)
   }
-
-  def filterByPopulation(cities: RDD[City], level: Int = 1000): RDD[City] = {
-    cities.filter(city => city.population > level * 1000)
-  }
-
-  def countriesPopulation(cities: RDD[City]): RDD[(String, Double)] = {
-    cities.map(city => (city.country, city.population))
-      .groupByKey()
-      .mapValues(all_populations => all_populations.sum)
-  }
-
-  def countriesWithTopN(cities: RDD[City], n: Int = 5): RDD[(String, Iterable[City])] = {
-    val countries = cities.map(city => (city.country, city)).groupByKey()
-    countries.mapValues(cities_of_country => {
-      cities_of_country.toList.sortBy(city => city.population).take(n)
-    })
-  }
 }
+
+
