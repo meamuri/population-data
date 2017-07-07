@@ -18,6 +18,7 @@ import utils.{SparkUtils}
   */
 object Job {
   def main(args: Array[String]) {
+    println("args.len & args: ", args.length, args.toString)
     val all_df = DataInit.loadDataWithBothSexes(SparkInit.getSparkSession)
 
     val million_population_cities = SparkUtils.getCitiesWithMillionPopulation(all_df)

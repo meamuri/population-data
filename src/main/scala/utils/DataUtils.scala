@@ -3,6 +3,8 @@ package utils
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, RelationalGroupedDataset}
 
+import scala.util.Try
+
 // This import is needed to use the $-notation
 //import org.apache.spark.implicits._
 
@@ -31,7 +33,7 @@ object DataUtils {
     var max_y =  0
     for (e <- l) {
       // смотрим, на какой год рассматриваемые данные актуальны
-      val curr_year = try { e(1).toString.toInt } catch { case _ => 0 }
+      val curr_year = Try(e(1).toString.toInt).getOrElse(0)
 
       // если рассматриваемые данные более актуальные, чем уже принятые
       // за наиболее свежие, меняем хранимый в переменной результата набор
@@ -82,7 +84,7 @@ object DataUtils {
       .rdd
       .filter(info => {
         val level = population * 1000
-        val value = try { info(3).toString.toDouble } catch { case _ => 0.0 }
+        val value = Try(info(3).toString.toDouble).getOrElse(0.0)
         value > level
       }) // сразу отбрасываем записи, в которых население меньше чем population*1000
       .map(x => (x(1), List(x(0), x(2), x(3))))
@@ -116,7 +118,7 @@ object DataUtils {
     countriesWithFull.mapValues(list => {
       var sum = 0.0
       for (el <- list) {
-        val people_in_city = try { el.toString.toDouble } catch { case _ => 0.0 }
+        val people_in_city = Try(el.toString.toDouble).getOrElse(0.0)
         sum += people_in_city
       }
       sum
