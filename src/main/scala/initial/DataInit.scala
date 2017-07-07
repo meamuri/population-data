@@ -20,9 +20,9 @@ class DataInit(val sparkSession: SparkSession, val basePath: String = "data") {
     loadData(isBoth = false, sparkSession)
   }
 
-  private def checkThatFileExsist(path: String): Boolean = {
-    new File(path).exists()
-  }
+//  private def fileExsist(path: String): Boolean = {
+//    new File(path).exists()
+//  }
 
   /**
     * Функция загрузки данных из csv файлов, хранящихся в каталоге проекта
