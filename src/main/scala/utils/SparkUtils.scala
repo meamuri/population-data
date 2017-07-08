@@ -1,11 +1,8 @@
 package utils
 
-import dao.PartOfPeople.PartOfPeople
-import dao.{City, PartOfPeople}
+import dao.City
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.{DataFrame, Row, SparkSession}
-
-import scala.util.Try
+import org.apache.spark.sql.DataFrame
 
 /**
   * Работа со Spark
