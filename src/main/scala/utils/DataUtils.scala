@@ -22,8 +22,8 @@ private object DataUtils {
   private def selectUsefulData(all_data: DataFrame): RDD[City] = {
     all_data.select("Country or Area", "City", "Year", "Value", "Sex").rdd
       .map(row => {
-        val country = Try(row(0).toString).getOrElse("null")
-        val city_name = Try(row(1).toString).getOrElse("null")
+        val country = Try(row(0).toString).getOrElse("null").replaceAll("\\.", "*")
+        val city_name = Try(row(1).toString).getOrElse("null").replaceAll("\\.", "")
         val year = Try(row(2).toString.toInt).getOrElse(-1)
         val population = Try(row(3).toString.toDouble).getOrElse(0.0)
         val sex = PartOfPeople.strToChar(Try(row(4).toString).getOrElse("b"))
