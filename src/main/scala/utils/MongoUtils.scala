@@ -18,13 +18,13 @@ class MongoUtils(val mongoDB: MongoDB){
   def saveTop5(data: RDD[(String, Iterable[City])]): Unit = {
     collTop.drop()
     data.collect()
-      .foreach(x => collTop.save(dbObjWithList(x._1, x._2, "top5")) )
+      .foreach(x => collTop.save(dbObjWithList(x._1, x._2)) )
   }
 
   def saveMillionaires(data: RDD[(String, Iterable[City])]): Unit = {
     collMillionaires.drop()
     data.collect()
-      .foreach(x => collMillionaires.save(dbObjWithList(x._1, x._2, "millionaires")) )
+      .foreach(x => collMillionaires.save(dbObjWithList(x._1, x._2)) )
   }
 
   def saveRatio(data: RDD[(String, Double)]): Unit = {
@@ -39,10 +39,11 @@ class MongoUtils(val mongoDB: MongoDB){
       .foreach(x => collPopulation.save(dbObjWithDouble(x._1, x._2, "population")) )
   }
 
-  private def dbObjWithList(country: String, cities: Iterable[City], name: String): DBObject = {
+  private def dbObjWithList(country: String, cities: Iterable[City]): DBObject = {
+    val simple_cities = cities.map(c => Map("name" -> c.name, "population" -> c.population))
     val builder = MongoDBObject.newBuilder
     builder += "country" -> country
-    builder += name -> cities
+    builder += "cities" -> simple_cities
     builder.result
   }
 

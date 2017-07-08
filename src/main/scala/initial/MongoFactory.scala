@@ -8,7 +8,7 @@ import com.mongodb.casbah.{MongoClient, MongoCollection, MongoDB}
 object MongoFactory {
   private val SERVER = "localhost"
   private val PORT   = 27017
-  private val DATABASE = "test"
+  private val DATABASE = "dsr_practice"
   private val COLLECTIONS = ("ratio", "top", "population", "millionaires")
 
   private val mongoClient = MongoClient(SERVER, PORT)
