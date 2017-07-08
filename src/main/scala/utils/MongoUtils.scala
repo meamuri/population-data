@@ -1,5 +1,6 @@
 package utils
 
+import com.mongodb.DBObject
 import com.mongodb.casbah.{MongoCollection, MongoDB}
 import com.mongodb.casbah.commons.MongoDBObject
 import dao.City
@@ -15,33 +16,40 @@ class MongoUtils(val mongoDB: MongoDB){
   val collPopulation: MongoCollection = mongoDB("population")
 
   def saveTop5(data: RDD[(String, Iterable[City])]): Unit = {
-    saveCountryToCitiesMap(data, collTop)
+    collTop.drop()
+    data.collect()
+      .foreach(x => collTop.save(dbObjWithList(x._1, x._2, "top5")) )
   }
 
   def saveMillionaires(data: RDD[(String, Iterable[City])]): Unit = {
-    saveCountryToCitiesMap(data, collMillionaires)
+    collMillionaires.drop()
+    data.collect()
+      .foreach(x => collMillionaires.save(dbObjWithList(x._1, x._2, "millionaires")) )
   }
 
   def saveRatio(data: RDD[(String, Double)]): Unit = {
-    saveCountryToDoubleMap(data, collRatio)
+    collRatio.drop()
+    data.collect()
+      .foreach(x => collRatio.save(dbObjWithDouble(x._1, x._2, "ratio")) )
   }
 
   def savePopulation(data: RDD[(String, Double)]): Unit = {
-    saveCountryToDoubleMap(data, collPopulation)
+    collPopulation.drop()
+    data.collect()
+      .foreach(x => collPopulation.save(dbObjWithDouble(x._1, x._2, "population")) )
   }
 
-
-  private def saveCountryToCitiesMap(data: RDD[(String, Iterable[City])], c: MongoCollection): Unit = {
+  private def dbObjWithList(country: String, cities: Iterable[City], name: String): DBObject = {
     val builder = MongoDBObject.newBuilder
-    data.collect().foreach(x => { builder += x._1 -> x._2 } )
-    val obj = builder.result()
-    c.insert(obj)
+    builder += "country" -> country
+    builder += name -> cities
+    builder.result
   }
 
-  private def saveCountryToDoubleMap(data: RDD[(String, Double)], c: MongoCollection): Unit = {
+  private def dbObjWithDouble(country: String, info: Double, name: String): DBObject = {
     val builder = MongoDBObject.newBuilder
-    data.collect().foreach(x => { builder += x._1 -> x._2 } )
-    val obj = builder.result()
-    c.insert(obj)
+    builder += "country" -> country
+    builder += name -> info
+    builder.result
   }
 }
