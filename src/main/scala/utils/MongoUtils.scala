@@ -21,7 +21,7 @@ class MongoUtils(val mongoDB: MongoDB){
       .foreach(x => collTop.save(dbObjWithList(x._1, x._2)) )
   }
 
-  def saveMillionaires(data: RDD[(String, Iterable[City])]): Unit = {
+  def saveMillionaires(data: RDD[(String, Int)]): Unit = {
     collMillionaires.drop()
     data.collect()
       .foreach(x => collMillionaires.save(dbObjWithList(x._1, x._2)) )
@@ -44,6 +44,13 @@ class MongoUtils(val mongoDB: MongoDB){
     val builder = MongoDBObject.newBuilder
     builder += "country" -> country
     builder += "cities" -> simple_cities
+    builder.result
+  }
+
+  private def dbObjWithList(country: String, cnt: Int): DBObject = {
+    val builder = MongoDBObject.newBuilder
+    builder += "country" -> country
+    builder += "city_million_more_population" -> cnt
     builder.result
   }
 

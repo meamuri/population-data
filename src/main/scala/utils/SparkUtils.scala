@@ -10,9 +10,10 @@ import org.apache.spark.sql.DataFrame
 class SparkUtils(all_data: DataFrame) {
   private val cities = DataUtils.getCities(all_data)
 
-  def getCitiesWithMillionPopulation: RDD[(String, Iterable[City])] = {
+  def getCitiesWithMillionPopulation: RDD[(String, Int)] = {
     val filtered_rows = filterByPopulation(cities, 1000)
-    groupCitiesByCountries(filtered_rows)
+    val res = groupCitiesByCountries(filtered_rows)
+    res.mapValues(it => it.size)
   }
 
   def getCountiesPopulation: RDD[(String, Double)] = {

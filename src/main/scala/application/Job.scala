@@ -54,7 +54,7 @@ object Job {
     val collTop = db("top")
     for (c <- collTop.take(7)) println(c)
 
-    println("\nМиллионеры:")
+    println("\nКоличество городов с населением более миллиона:")
     val collMill = db("millionaires")
     for (c <- collMill.take(7)) println(c)
 
