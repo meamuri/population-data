@@ -9,7 +9,7 @@ import utils.{MongoUtils, SparkUtils}
   * Необходимо рассчитать:
   *  * население стран
   *  * для каждой страны:
-  *    * города миллионники
+  *    * количество городов миллионников
   *    * топ 5 самых крупных
   *    * соотношение мужчин/женщин
   *
@@ -62,5 +62,6 @@ object Job {
     val coll = db("ratio")
     for (c <- coll.take(7)) println(c)
 
+    SparkInit.getSparkSession.close()
   }
 }
