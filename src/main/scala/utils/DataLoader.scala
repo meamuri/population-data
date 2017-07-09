@@ -1,4 +1,4 @@
-package initial
+package utils
 
 import java.io.File
 
@@ -8,7 +8,7 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
 /**
   * Загрузчик данных из файлов csv
   */
-class DataInit(val basePath: String = "data") {
+class DataLoader(val basePath: String = "data") {
   private val fileBoth = basePath + "/unsd-citypopulation-year-both.csv"
   private val fileDiff = basePath + "/unsd-citypopulation-year-fm.csv"
 

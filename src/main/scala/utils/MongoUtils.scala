@@ -9,7 +9,7 @@ import org.apache.spark.rdd.RDD
 /**
   * Некоторый функционал по работе с MongoDB
   */
-object MongoUtils{
+class MongoUtils {
   def saveTop5(data: RDD[(String, Iterable[City])], collTop5: MongoCollection): Unit = {
     collTop5.drop()
     data.collect()

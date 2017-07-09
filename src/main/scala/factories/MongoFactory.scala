@@ -1,4 +1,4 @@
-package initial
+package factories
 
 import com.mongodb.casbah.{MongoClient, MongoCollection, MongoDB}
 

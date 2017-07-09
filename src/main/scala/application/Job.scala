@@ -1,7 +1,7 @@
 package application
 
-import initial.{DataInit, MongoFactory, SparkInit}
-import utils.{MongoUtils, SparkUtils}
+import factories.{MongoFactory, SparkFactory}
+import utils.{DataLoader, MongoUtils, SparkUtils}
 
 import scala.util.Try
 
@@ -31,28 +31,29 @@ object Job {
     val path = if (args.length == 0) { "data" } else { args(0) }
     val year = if (args.length < 2) { -1 } else { Try(args(1).toInt).getOrElse(-1) }
 
-    val loader = new DataInit(path)
-    if (!loader.checkWorkFolder()){
+    val loader = new DataLoader(path)
+    if (!loader.checkWorkFolder){
       println("По указанному пути нет необходимых для работы файлов!")
       return
     }
 
-    val all_df = loader.loadDataWithBothSexes(SparkInit.getSparkSession)
+    val all_df = loader.loadDataWithBothSexes(SparkFactory.getSparkSession)
     val worker = new SparkUtils(all_df, year)
+    val keeper = new MongoUtils
 
     val million_population_cities = worker.getCitiesWithMillionPopulation
-    MongoUtils.saveMillionaires(million_population_cities, MongoFactory.getMillionairesCollection)
+    keeper.saveMillionaires(million_population_cities, MongoFactory.getMillionairesCollection)
 
     val population_by_countries = worker.getCountiesPopulation
-    MongoUtils.savePopulation(population_by_countries, MongoFactory.getPopulationCollection)
+    keeper.savePopulation(population_by_countries, MongoFactory.getPopulationCollection)
 
     val top5 = worker.getTop5_cities
-    MongoUtils.saveTop5(top5, MongoFactory.getTopCollection)
+    keeper.saveTop5(top5, MongoFactory.getTopCollection)
 
-    val ratio = worker.getRatio(loader.loadDataWithDiffSexes(SparkInit.getSparkSession))
-    MongoUtils.saveRatio(ratio, MongoFactory.getRatioCollection)
+    val ratio = worker.getRatio(loader.loadDataWithDiffSexes(SparkFactory.getSparkSession))
+    keeper.saveRatio(ratio, MongoFactory.getRatioCollection)
 
     MongoFactory.closeConnection()
-    SparkInit.getSparkSession.close()
+    SparkFactory.getSparkSession.close()
   }
 }
