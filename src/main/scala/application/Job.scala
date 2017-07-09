@@ -29,39 +29,22 @@ object Job {
     val path = if (args.length == 0) { "data" } else { args(0) }
 
     val loader = new DataInit(SparkInit.getSparkSession, path)
-    val db = MongoFactory.getMongoDatabase
-    val db_manager = new MongoUtils(db)
     val all_df = loader.loadDataWithBothSexes()
     val worker = new SparkUtils(all_df)
 
     val million_population_cities = worker.getCitiesWithMillionPopulation
-    db_manager.saveMillionaires(million_population_cities)
+    MongoUtils.saveMillionaires(million_population_cities, MongoFactory.getMillionairesCollection)
 
     val population_by_countries = worker.getCountiesPopulation
-    db_manager.savePopulation(population_by_countries)
+    MongoUtils.savePopulation(population_by_countries, MongoFactory.getPopulationCollection)
 
     val top5 = worker.getTop5_cities
-    db_manager.saveTop5(top5)
+    MongoUtils.saveTop5(top5, MongoFactory.getTopCollection)
 
     val ratio = worker.getRatio(loader.loadDataWithDiffSexes())
-    db_manager.saveRatio(ratio)
+    MongoUtils.saveRatio(ratio, MongoFactory.getRatioCollection)
 
-    println("\nНасеелние:")
-    val collPop = db("population")
-    for (c <- collPop.take(7)) println(c)
-
-    println("\nТопы-5:")
-    val collTop = db("top")
-    for (c <- collTop.take(7)) println(c)
-
-    println("\nКоличество городов с населением более миллиона:")
-    val collMill = db("millionaires")
-    for (c <- collMill.take(7)) println(c)
-
-    println("\nСоотношение м/ж:")
-    val coll = db("ratio")
-    for (c <- coll.take(7)) println(c)
-
+    MongoFactory.closeConnection()
     SparkInit.getSparkSession.close()
   }
 }

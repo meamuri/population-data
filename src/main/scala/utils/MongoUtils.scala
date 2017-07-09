@@ -1,7 +1,7 @@
 package utils
 
 import com.mongodb.DBObject
-import com.mongodb.casbah.{MongoCollection, MongoDB}
+import com.mongodb.casbah.MongoCollection
 import com.mongodb.casbah.commons.MongoDBObject
 import dao.City
 import org.apache.spark.rdd.RDD
@@ -9,31 +9,26 @@ import org.apache.spark.rdd.RDD
 /**
   * Некоторый функционал по работе с MongoDB
   */
-class MongoUtils(val mongoDB: MongoDB){
-  val collTop: MongoCollection = mongoDB("top")
-  val collMillionaires: MongoCollection = mongoDB("millionaires")
-  val collRatio: MongoCollection = mongoDB("ratio")
-  val collPopulation: MongoCollection = mongoDB("population")
-
-  def saveTop5(data: RDD[(String, Iterable[City])]): Unit = {
-    collTop.drop()
+object MongoUtils{
+  def saveTop5(data: RDD[(String, Iterable[City])], collTop5: MongoCollection): Unit = {
+    collTop5.drop()
     data.collect()
-      .foreach(x => collTop.save(dbObjWithList(x._1, x._2)) )
+      .foreach(x => collTop5.save(dbObjWithList(x._1, x._2)) )
   }
 
-  def saveMillionaires(data: RDD[(String, Int)]): Unit = {
+  def saveMillionaires(data: RDD[(String, Int)], collMillionaires: MongoCollection): Unit = {
     collMillionaires.drop()
     data.collect()
       .foreach(x => collMillionaires.save(dbObjWithList(x._1, x._2)) )
   }
 
-  def saveRatio(data: RDD[(String, Double)]): Unit = {
+  def saveRatio(data: RDD[(String, Double)], collRatio: MongoCollection): Unit = {
     collRatio.drop()
     data.collect()
       .foreach(x => collRatio.save(dbObjWithDouble(x._1, x._2, "ratio")) )
   }
 
-  def savePopulation(data: RDD[(String, Double)]): Unit = {
+  def savePopulation(data: RDD[(String, Double)], collPopulation: MongoCollection): Unit = {
     collPopulation.drop()
     data.collect()
       .foreach(x => collPopulation.save(dbObjWithDouble(x._1, x._2, "population")) )

@@ -14,10 +14,12 @@ object MongoFactory {
   private val mongoClient = MongoClient(SERVER, PORT)
   private val db = mongoClient(DATABASE)
 
-  def getMongoDatabase: MongoDB = { db }
-
   def getRatioCollection: MongoCollection = db(COLLECTIONS._1)
   def getTopCollection: MongoCollection = db(COLLECTIONS._2)
   def getPopulationCollection: MongoCollection = db(COLLECTIONS._3)
   def getMillionairesCollection: MongoCollection = db(COLLECTIONS._4)
+
+  def closeConnection(): Unit = {
+    mongoClient.close()
+  }
 }
