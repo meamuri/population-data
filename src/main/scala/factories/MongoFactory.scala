@@ -1,6 +1,6 @@
 package factories
 
-import com.mongodb.casbah.{MongoClient, MongoCollection, MongoDB}
+import com.mongodb.casbah.{MongoClient, MongoCollection}
 
 /**
   * инициализация noSQL базы данных MongoDB

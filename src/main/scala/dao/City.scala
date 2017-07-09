@@ -1,14 +1,12 @@
 package dao
 
-import dao.PartOfPeople.PartOfPeople
-
 /**
   * класс-представление для города
   */
 case class City (
-                  country: String,
-                  name: String,
-                  year: Int,
-                  population: Double,
-                  sex: Char = 'b'
-                )
+  country: String,      // название страны, в которой расположен город
+  name: String,         // название города
+  year: Int,            // год, на который актуальны данные
+  population: Double,   // население страны по данным за год "year"
+  sex: Char = 'b'       // население какого пола представлено в объекте (b -- обоих полов)
+)
