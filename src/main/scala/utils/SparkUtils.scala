@@ -7,8 +7,8 @@ import org.apache.spark.sql.DataFrame
 /**
   * Работа со Spark
   */
-class SparkUtils(all_data: DataFrame) {
-  private val cities = DataUtils.getCities(all_data)
+class SparkUtils(all_data: DataFrame, year: Int) {
+  private val cities = DataUtils.getCities(all_data, year)
 
   def getCitiesWithMillionPopulation: RDD[(String, Int)] = {
     val filtered_rows = filterByPopulation(cities, 1000)
@@ -25,7 +25,7 @@ class SparkUtils(all_data: DataFrame) {
   }
 
   def getRatio(data_by_sexes: DataFrame): RDD[(String, Double)] = {
-    val cities = DataUtils.getCitiesBothSexes(data_by_sexes)
+    val cities = DataUtils.getCitiesBothSexes(data_by_sexes, year)
     cities.map(city => (city.country, city))
       .groupByKey()
       .mapValues(cities_of_country => {

@@ -3,6 +3,8 @@ package application
 import initial.{DataInit, MongoFactory, SparkInit}
 import utils.{MongoUtils, SparkUtils}
 
+import scala.util.Try
+
 /**
   * Точка входа в приложение
   *
@@ -19,7 +21,7 @@ import utils.{MongoUtils, SparkUtils}
 object Job {
   /**
     *
-    * @param args args(1) путь до папки, содержащий два файла:
+    * @param args args(0) путь до папки, содержащий два файла:
     *             1. unsd-citypopulation-year-both.csv
     *             2. unsd-citypopulation-year-both.csv
     *             Если параметр пуст, пытаемся подставить './data'
@@ -27,10 +29,16 @@ object Job {
     */
   def main(args: Array[String]) {
     val path = if (args.length == 0) { "data" } else { args(0) }
+    val year = if (args.length < 2) { -1 } else { Try(args(1).toInt).getOrElse(-1) }
 
     val loader = new DataInit(SparkInit.getSparkSession, path)
+    if (!loader.checkWorkFolder()){
+      println("По указанному пути нет необходимых для работы файлов!")
+      return
+    }
+
     val all_df = loader.loadDataWithBothSexes()
-    val worker = new SparkUtils(all_df)
+    val worker = new SparkUtils(all_df, year)
 
     val million_population_cities = worker.getCitiesWithMillionPopulation
     MongoUtils.saveMillionaires(million_population_cities, MongoFactory.getMillionairesCollection)

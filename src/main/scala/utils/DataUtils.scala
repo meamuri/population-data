@@ -10,13 +10,13 @@ import scala.util.Try
   * Модуль для работы с данными
   */
 private object DataUtils {
-  def getCities(all_data: DataFrame): RDD[City] = {
-    selectUsefulRows(selectUsefulData(all_data))
+  def getCities(all_data: DataFrame, year: Int = -1): RDD[City] = {
+    selectUsefulRows(selectUsefulData(all_data), year)
   }
 
-  def getCitiesBothSexes(all_data: DataFrame): RDD[City] = {
+  def getCitiesBothSexes(all_data: DataFrame, year: Int = -1): RDD[City] = {
     val cities = selectUsefulData(all_data)
-    usefulRowsForBothSexes(cities)
+    usefulRowsForBothSexes(cities, year)
   }
 
   private def selectUsefulData(all_data: DataFrame): RDD[City] = {

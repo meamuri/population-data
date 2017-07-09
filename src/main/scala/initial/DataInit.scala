@@ -20,8 +20,10 @@ class DataInit(val sparkSession: SparkSession, val basePath: String = "data") {
     loadData(isBoth = false, sparkSession)
   }
 
-  def fileExists(path: String): Boolean = {
-    new File(path).exists()
+  def checkWorkFolder(): Boolean = {
+    val file_with_both_data = new File(fileBoth)
+    val file_with_diff_data = new File(fileDiff)
+    file_with_both_data.exists() && file_with_diff_data.exists()
   }
 
   /**
