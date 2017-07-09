@@ -31,13 +31,13 @@ object Job {
     val path = if (args.length == 0) { "data" } else { args(0) }
     val year = if (args.length < 2) { -1 } else { Try(args(1).toInt).getOrElse(-1) }
 
-    val loader = new DataInit(SparkInit.getSparkSession, path)
+    val loader = new DataInit(path)
     if (!loader.checkWorkFolder()){
       println("По указанному пути нет необходимых для работы файлов!")
       return
     }
 
-    val all_df = loader.loadDataWithBothSexes()
+    val all_df = loader.loadDataWithBothSexes(SparkInit.getSparkSession)
     val worker = new SparkUtils(all_df, year)
 
     val million_population_cities = worker.getCitiesWithMillionPopulation
@@ -49,7 +49,7 @@ object Job {
     val top5 = worker.getTop5_cities
     MongoUtils.saveTop5(top5, MongoFactory.getTopCollection)
 
-    val ratio = worker.getRatio(loader.loadDataWithDiffSexes())
+    val ratio = worker.getRatio(loader.loadDataWithDiffSexes(SparkInit.getSparkSession))
     MongoUtils.saveRatio(ratio, MongoFactory.getRatioCollection)
 
     MongoFactory.closeConnection()
