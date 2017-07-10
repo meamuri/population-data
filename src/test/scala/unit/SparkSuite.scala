@@ -1,6 +1,8 @@
 package unit
 
 import factories.{MongoFactory, SparkFactory}
+import org.apache.spark.sql
+import org.apache.spark.sql.DataFrame
 import org.scalatest.{BeforeAndAfter, FunSuite}
 import utils.{DataLoader, MongoUtils, SparkUtils}
 
@@ -13,12 +15,18 @@ import utils.{DataLoader, MongoUtils, SparkUtils}
   * Файлы содержат сильно укороченный набор исходных файлов
   */
 class SparkSuite extends FunSuite with BeforeAndAfter {
+  var loader: DataLoader = _
+  var all_df: DataFrame = _
+  var worker: SparkUtils = _
+  var keeper: MongoUtils = _
 
   before {
-    val loader = new DataLoader("data")
-    val all_df = loader.loadDataWithBothSexes(SparkFactory.getSparkSession)
-    val worker = new SparkUtils(all_df, -1)
-    val keeper = new MongoUtils
+    loader = new DataLoader("short-test-data")
+    all_df = loader.loadDataWithBothSexes(SparkFactory.getSparkSession)
+    worker = new SparkUtils(all_df, -1)
+    keeper = new MongoUtils
+
+    all_df.createOrReplaceTempView("population")
   }
 
   after {
@@ -26,7 +34,10 @@ class SparkSuite extends FunSuite with BeforeAndAfter {
     SparkFactory.closeSession()
   }
 
-  test("spark.sql loads row data from file (DataFrame)") {
-
+  test("data file should contain info about 5 countries") {
+    val res = all_df.select("Country or Area").distinct()
+      .rdd
+      .count()
+    assert(res === 5)
   }
 }
