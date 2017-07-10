@@ -9,7 +9,7 @@ import scala.util.Try
 /**
   * Модуль для работы с данными
   */
-private object DataUtils {
+object DataUtils {
   /**
     * Функция, позволяющая получить абстракцию абстракцию над данными,
     * предложенному для обработки в Spark: RDD

@@ -1,9 +1,11 @@
 "Country or Area","Year","Area","Sex","City","City type","Record Type","Reliability","Source Year","Value","Value Footnotes"
 "Armenia",2011,"Total","Both Sexes","Gyumri (Leninakan)","City proper","Census - de jure - complete tabulation","Final figure, complete",2013,121976,
+"Armenia",2009,"Total","Both Sexes","Gyumri (Leninakan)","City proper","Estimate - de jure","Final figure, complete",2010,146355,
 "Armenia",2009,"Total","Both Sexes","YEREVAN","City proper","Estimate - de jure","Final figure, complete",2010,1116648,
 "Australia",2012,"Total","Both Sexes","Adelaide","City proper","Estimate - de jure","Final figure, complete",2014,1250795,6
 "Australia",2012,"Total","Both Sexes","Brisbane","City proper","Estimate - de jure","Final figure, complete",2014,2099328,6
 "Australia",2012,"Total","Both Sexes","Cairns","City proper","Estimate - de jure","Final figure, complete",2014,142124,6
+"Australia",2011,"Total","Both Sexes","Cairns","City proper","Estimate - de jure","Provisional figure",2013,139693,6
 "Argentina",2010,"Total","Both Sexes","La Plata","Urban agglomeration","Estimate - de facto","Final figure, complete",2011,744885.526810173,"2,5"
 "Argentina",2010,"Total","Both Sexes","Córdoba","Urban agglomeration","Estimate - de facto","Final figure, complete",2011,1405547.38043669,"2,5"
 "Belarus",2012,"Total","Both Sexes","Baranovichi","City proper","Estimate - de jure","Final figure, complete",2013,170263,
