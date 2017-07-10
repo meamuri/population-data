@@ -20,7 +20,12 @@ sudo service mongod start
 ### Запуск приложения:
 
 ```bash
-sbt "run-main application.Job data -1"
+$ sbt "run-main application.Job data -1"
+```
+
+Для запуска тестов:
+```bash
+$ sbt test
 ```
 
 Для просмотра полученных после работы программы коллекциях:

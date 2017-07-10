@@ -15,23 +15,17 @@ import utils.{DataLoader, MongoUtils, SparkUtils}
   * Файлы содержат сильно укороченный набор исходных файлов
   */
 class SparkSuite extends FunSuite with BeforeAndAfter {
-  var loader: DataLoader = _
-  var all_df: DataFrame = _
-  var worker: SparkUtils = _
-  var keeper: MongoUtils = _
+  val loader: DataLoader = new DataLoader("short-test-data")
+  val all_df: DataFrame = loader.loadDataWithBothSexes(SparkFactory.getSparkSession)
+  val worker: SparkUtils = new SparkUtils(all_df, -1)
+  val keeper: MongoUtils = new MongoUtils
 
   before {
-    loader = new DataLoader("short-test-data")
-    all_df = loader.loadDataWithBothSexes(SparkFactory.getSparkSession)
-    worker = new SparkUtils(all_df, -1)
-    keeper = new MongoUtils
 
-    all_df.createOrReplaceTempView("population")
   }
 
   after {
-    MongoFactory.closeConnection()
-    SparkFactory.closeSession()
+
   }
 
   test("data file should contain info about 5 countries") {
@@ -39,5 +33,11 @@ class SparkSuite extends FunSuite with BeforeAndAfter {
       .rdd
       .count()
     assert(res === 5)
+  }
+
+  test("data_loader should check, that folder contain data files") {
+    val some_loader = new DataLoader("abc")
+    assert(!some_loader.checkWorkFolder())
+    assert(loader.checkWorkFolder())
   }
 }
