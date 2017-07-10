@@ -17,4 +17,5 @@ object SparkFactory {
   def getSparkContext: SparkContext = { sc }
   def getSparkSession: SparkSession = { session }
 
+  def closeSession(): Unit = { session.close() }
 }

@@ -69,6 +69,6 @@ object Job {
     keeper.saveRatio(ratio, MongoFactory.getRatioCollection)
 
     MongoFactory.closeConnection()
-    SparkFactory.getSparkSession.close()
+    SparkFactory.closeSession()
   }
 }
