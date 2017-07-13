@@ -1,5 +1,8 @@
 package application
 
+import java.io.File
+
+import com.typesafe.config.ConfigFactory
 import factories.{MongoFactory, SparkFactory}
 import utils.{DataLoader, MongoUtils, SparkUtils}
 
@@ -43,6 +46,9 @@ object Job {
     *             все равно пытаемся смотреть самые свежие записи
     */
   def main(args: Array[String]) {
+    val conf = ConfigFactory.parseFile(new File("resources/config/application.json"))
+    println(conf.getInt("App.job.level"))
+
     val path = if (args.length == 0) { "data" } else { args(0) }
     val year = if (args.length < 2) { -1 } else { Try(args(1).toInt).getOrElse(-1) }
 
