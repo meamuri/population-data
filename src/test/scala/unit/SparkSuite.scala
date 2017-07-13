@@ -43,7 +43,7 @@ class SparkSuite extends FunSuite with BeforeAndAfter {
   test("algorithm should take me info about 5 countries") {
     val countries_pop = worker.getCountiesPopulation
     assert(countries_pop.count() === 5)
-    val countries_top = worker.getTop5_cities
+    val countries_top = worker.getTop5cities
     assert(countries_top.count() === 5)
 
     val pre = loader.loadDataWithDiffSexes(SparkFactory.getSparkSession)

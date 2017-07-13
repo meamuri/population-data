@@ -40,7 +40,7 @@ class SparkUtils(all_data: DataFrame, year: Int) {
     * @return Каждой стране будет поставлен в соотвествие некоторый список
     *         из городов, входящих в топ
     */
-  def getTop5_cities: RDD[(String, Iterable[City])] = {
+  def getTop5cities: RDD[(String, Iterable[City])] = {
     countriesWithTopN(cities, 5)
   }
 

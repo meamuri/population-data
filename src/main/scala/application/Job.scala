@@ -62,7 +62,7 @@ object Job {
     val population_by_countries = worker.getCountiesPopulation
     keeper.savePopulation(population_by_countries, MongoFactory.getPopulationCollection)
 
-    val top5 = worker.getTop5_cities
+    val top5 = worker.getTop5cities
     keeper.saveTop5(top5, MongoFactory.getTopCollection)
 
     val ratio = worker.getRatio(loader.loadDataWithDiffSexes(SparkFactory.getSparkSession))
