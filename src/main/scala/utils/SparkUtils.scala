@@ -21,14 +21,21 @@ class SparkUtils (val loader: DataLoader) {
   def collectByCountries(cities: RDD[City]): RDD[(String, Iterable[City])] =
     cities.map(city => (city.country, city)).groupByKey()
 
-  private def rowsToCities(data: RDD[Map[String, String]]): RDD[City] =
-    data.map(row =>  City(
-      country = Try(row.get("Country or Area").toString).getOrElse("null").replaceAll("\\.", ""),
-      name = Try(row.get("City").toString).getOrElse("null").replaceAll("\\.", ""),
-      year = Try(row.get("Year").toString.toInt).getOrElse(-1),
-      population = Try(row.get("Value").toString.toDouble).getOrElse(0.0),
-      sex = PartOfPeople.strToChar(Try(row.get("Sex").toString).getOrElse("b"))
-    ))
+  private def rowsToCities(data: RDD[Map[String, String]]): RDD[City] = {
+    data.collect().take(5).foreach(p => println(p))
+    val res = data.map(row => {
+      val city = City(
+        country = row.getOrElse("Country or Area", "null").replaceAll("\\.", ""),
+        name = row.getOrElse("City", "null").replaceAll("\\.", ""),
+        year = row.getOrElse("Year", "-1").toInt,
+        population = row.getOrElse("Value", "0.0").toDouble,
+        sex = PartOfPeople.strToChar(row.getOrElse("Sex", "b"))
+      )
+      city
+    })
+//    res.collect().take(5).foreach(p => println(p))
+    res
+  }
 
   private def selectUsefulRows(data: RDD[City], year: Int): RDD[City] = {
     val tmp = data.map(city => (city.name, city.copy()))
@@ -41,8 +48,9 @@ class SparkUtils (val loader: DataLoader) {
     res.map(pair => pair._2.copy())
   }
 
-  private def selectBothRows(data: RDD[City], year: Int): RDD[City] =
+  private def selectBothRows(data: RDD[City], year: Int): RDD[City] = {
     selectUsefulRows(data, year)
+  }
 
   private def selectDiffRows(data: RDD[City], year: Int): RDD[City] =
     selectUsefulRows(data.filter(city => city.sex == 'm'), year)

@@ -17,12 +17,14 @@ class DataLoader(private val basePath: String, private val year: Int, private va
   RDD[Map[String, String]] = {
     val path =  if (isBoth) { fileBoth } else { fileDiff }
     val csv = sparkContext.textFile(path)
-    val all_lines = csv.map(line => line.split(",").map(elem => elem.trim))
+    val all_lines = csv
+      .map(line => line.split(",")
+      .map(elem => elem.trim.replaceAll("\"", "").replaceAll("\\.", " ")))
 
     val header = all_lines.first
 
     val result = all_lines.map(splits => { header.zip(splits).toMap })
-
+    result.collect().take(5).foreach(p => println(p))
     result
   }
 
