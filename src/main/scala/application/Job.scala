@@ -1,8 +1,5 @@
 package application
 
-import java.io.File
-
-import com.typesafe.config.ConfigFactory
 import factories.{MongoFactory, Resources, SparkFactory}
 import utils.{DataLoader, MongoUtils, SparkUtils}
 
