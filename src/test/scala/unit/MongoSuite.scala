@@ -2,14 +2,15 @@ package unit
 
 import com.mongodb.casbah.commons.MongoDBObject
 import com.mongodb.casbah.{MongoClient, MongoCollection}
+import factories.Resources
 import org.scalatest.{BeforeAndAfter, FunSuite}
 
 /**
   * Тесты работы с базой MongoDB
   */
 class MongoSuite extends FunSuite with BeforeAndAfter{
-  private val mongoClient = MongoClient("localhost", 27017)
-  private val db = mongoClient("test")
+  private val mongoClient = MongoClient(Resources.getDbServer, Resources.getDbPort)
+  private val db = mongoClient(Resources.getTestDbName)
 
   val const_collection: MongoCollection = db("const")
   var some_collection: MongoCollection = _

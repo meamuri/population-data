@@ -1,7 +1,7 @@
 package unit
 
 import dao.City
-import factories.SparkFactory
+import factories.{Resources, SparkFactory}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.DataFrame
 import org.scalatest.{BeforeAndAfter, FunSuite}
@@ -16,7 +16,7 @@ import utils.{DataLoader, DataUtils, MongoUtils, SparkUtils}
   * Файлы содержат сильно укороченный набор исходных файлов
   */
 class SparkSuite extends FunSuite with BeforeAndAfter {
-  val loader: DataLoader = new DataLoader("short-test-data")
+  val loader: DataLoader = new DataLoader(Resources.getTestDataPath)
   val all_df: DataFrame = loader.loadDataWithBothSexes(SparkFactory.getSparkSession)
   val worker: SparkUtils = new SparkUtils(all_df, -1)
   val keeper: MongoUtils = new MongoUtils
