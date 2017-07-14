@@ -5,12 +5,13 @@ import java.io.File
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 
-class DataLoader(val basePath: String = "data") {
+class DataLoader(val basePath: String = "data", val sc: SparkContext) {
+
   private val fileBoth = basePath + "/unsd-citypopulation-year-both.csv"
   private val fileDiff = basePath + "/unsd-citypopulation-year-fm.csv"
 
-  def loadDataWithBothSexes(sc: SparkContext): RDD[Map[String, String]] = loadData(isBoth = true, sc)
-  def loadDataWithDiffSexes(sc: SparkContext): RDD[Map[String, String]] = loadData(isBoth = false, sc)
+  def loadDataWithBothSexes: RDD[Map[String, String]] = loadData(isBoth = true, sc)
+  def loadDataWithDiffSexes: RDD[Map[String, String]] = loadData(isBoth = false, sc)
 
   /**
     * Функция, которой необходимо воспользоваться перед загрузкой данных
@@ -18,7 +19,7 @@ class DataLoader(val basePath: String = "data") {
     * с объектом-загрузчиком, необходимые для работы файлы
     * @return
     */
-  def checkWorkFolder(): Boolean = {
+  def checkWorkFolder: Boolean = {
     val file_with_both_data = new File(fileBoth)
     val file_with_diff_data = new File(fileDiff)
     file_with_both_data.exists() && file_with_diff_data.exists()
