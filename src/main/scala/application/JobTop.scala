@@ -2,7 +2,7 @@ package application
 
 import factories.{MongoFactory, Resources, SparkFactory}
 import helpers.Common
-import services.Task
+import services.{Keeper, Miner}
 import utils.DataLoader
 
 import scala.util.Try
@@ -21,9 +21,11 @@ object JobTop {
     }
 
     val loader = new DataLoader(path, year, SparkFactory.getSparkContext)
-    val task = new Task(loader)
+    val worker = new Miner(loader)
+    val saver = new Keeper
 
-    task.calculateTop()
+    val res = worker.getTopCities(Resources.getTop)
+    saver.saveTop(res, MongoFactory.getTopCollection)
 
     MongoFactory.closeConnection()
     SparkFactory.closeSession()

@@ -37,5 +37,4 @@ class Keeper {
       .foreach(x => coll.save(utils.dbObjWithDouble(x._1, x._2, "population")) )
   }
 
-
 }
