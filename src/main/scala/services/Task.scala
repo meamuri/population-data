@@ -1,24 +1,29 @@
 package services
 
+import factories.{MongoFactory, Resources}
 import utils.DataLoader
 
 class Task (val loader: DataLoader) {
-  val worker = new Miner(loader)
-  val saver = new Keeper
+  private val worker = new Miner(loader)
+  private val saver = new Keeper
 
-  def calculateRatio(isMaleToFemaleRatio: Boolean): Unit = {
-    val res = worker.getRatio(isMaleToFemaleRatio)
+  def calculateRatio(): Unit = {
+    val res = worker.getRatio(Resources.isRationMaleToFemale)
+    saver.saveRatio(res, MongoFactory.getRatioCollection)
   }
 
   def calculatePopulation(): Unit = {
     val res = worker.getCountiesPopulation
+    saver.savePopulation(res, MongoFactory.getPopulationCollection)
   }
 
-  def calculateTop(top: Int): Unit = {
-    val res = worker.getTopCities(top)
+  def calculateTop(): Unit = {
+    val res = worker.getTopCities(Resources.getTop)
+    saver.saveTop(res, MongoFactory.getTopCollection)
   }
 
-  def calculateMillionaires(level: Int): Unit = {
-    val res = worker.getCitiesWithPopulationMoreThan(level)
+  def calculateMillionaires(): Unit = {
+    val res = worker.getCitiesWithPopulationMoreThan(Resources.getLevel)
+    saver.saveMillionaires(res, MongoFactory.getMillionairesCollection)
   }
 }

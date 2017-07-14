@@ -1,29 +1,17 @@
 package utils
 
-import java.io.File
-
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 
-class DataLoader(val basePath: String = "data", val sc: SparkContext) {
+class DataLoader(private val basePath: String, private val year: Int, private val sc: SparkContext) {
+
+  def getYear: Int = this.year
 
   private val fileBoth = basePath + "/unsd-citypopulation-year-both.csv"
   private val fileDiff = basePath + "/unsd-citypopulation-year-fm.csv"
 
   def loadDataWithBothSexes: RDD[Map[String, String]] = loadData(isBoth = true, sc)
   def loadDataWithDiffSexes: RDD[Map[String, String]] = loadData(isBoth = false, sc)
-
-  /**
-    * Функция, которой необходимо воспользоваться перед загрузкой данных
-    * Функция осуществляет проверку, хранятся ли в директории, ассоциированной
-    * с объектом-загрузчиком, необходимые для работы файлы
-    * @return
-    */
-  def checkWorkFolder: Boolean = {
-    val file_with_both_data = new File(fileBoth)
-    val file_with_diff_data = new File(fileDiff)
-    file_with_both_data.exists() && file_with_diff_data.exists()
-  }
 
   private def loadData(isBoth: Boolean, sparkContext: SparkContext):
   RDD[Map[String, String]] = {

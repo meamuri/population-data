@@ -27,4 +27,7 @@ object Resources {
 
   def getDbServer: String = config.getString("db.server")
   def getDbPort: Int = config.getInt("db.port")
+
+  def getBothFilename: String = config.getString("both-filename")
+  def getDiffFilename: String = config.getString("diff-filename")
 }

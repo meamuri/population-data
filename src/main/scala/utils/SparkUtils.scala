@@ -12,8 +12,8 @@ class SparkUtils (val loader: DataLoader) {
   private val both = loader.loadDataWithBothSexes
   private val diff = loader.loadDataWithDiffSexes
 
-  def getCitiesWithBothData: RDD[City] = selectBothRows(rowsToCities(both))
-  def getCitiesWithDiffData: RDD[City] = selectDiffRows(rowsToCities(diff))
+  def getCitiesWithBothData: RDD[City] = selectBothRows(rowsToCities(both), loader.getYear)
+  def getCitiesWithDiffData: RDD[City] = selectDiffRows(rowsToCities(diff), loader.getYear)
 
   def filterCities(cities: RDD[City], level: Int): RDD[City] =
     cities.filter(city => city.population > level)
@@ -30,7 +30,7 @@ class SparkUtils (val loader: DataLoader) {
       sex = PartOfPeople.strToChar(Try(row.get("Sex").toString).getOrElse("b"))
     ))
 
-  private def selectUsefulRows(data: RDD[City], year: Int = -1): RDD[City] = {
+  private def selectUsefulRows(data: RDD[City], year: Int): RDD[City] = {
     val tmp = data.map(city => (city.name, city.copy()))
       .groupByKey()
     val res = if (year == -1) {
@@ -41,10 +41,10 @@ class SparkUtils (val loader: DataLoader) {
     res.map(pair => pair._2.copy())
   }
 
-  private def selectBothRows(data: RDD[City], year: Int = -1): RDD[City] =
+  private def selectBothRows(data: RDD[City], year: Int): RDD[City] =
     selectUsefulRows(data, year)
 
-  private def selectDiffRows(data: RDD[City], year: Int = -1): RDD[City] =
+  private def selectDiffRows(data: RDD[City], year: Int): RDD[City] =
     selectUsefulRows(data.filter(city => city.sex == 'm'), year)
       .union(selectUsefulRows(data.filter(city => city.sex == 'f'), year))
 

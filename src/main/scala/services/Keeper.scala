@@ -9,30 +9,32 @@ import utils.MongoUtils
   *
   */
 class Keeper {
-  val utils = new MongoUtils
+  val utils = new MongoUtils("Country")
 
-  def saveTop(data: RDD[(String, Iterable[City])], collTop5: MongoCollection): Unit = {
-    collTop5.drop()
-    data.collect()
-      .foreach(x => collTop5.save(utils.dbObjWithList(x._1, x._2)) )
+  def saveTop(data: RDD[(String, Iterable[City])], coll: MongoCollection): Unit = {
+    coll.drop()
+    val res = data
+      .mapValues(cities => cities.map(c => Map("name" -> c.name, "population" -> c.population)))
+    res.collect()
+      .foreach(country => coll.save(utils.dbObjWithList(country._1, country._2, "top")) )
   }
 
-  def saveMillionaires(data: RDD[(String, Int)], collMillionaires: MongoCollection): Unit = {
-    collMillionaires.drop()
+  def saveMillionaires(data: RDD[(String, Int)], coll: MongoCollection): Unit = {
+    coll.drop()
     data.collect()
-      .foreach(x => collMillionaires.save(utils.dbObjWithList(x._1, x._2)) )
+      .foreach(x => coll.save(utils.dbObjWithInt(x._1, x._2, "millionaires")) )
   }
 
-  def saveRatio(data: RDD[(String, Double)], collRatio: MongoCollection): Unit = {
-    collRatio.drop()
+  def saveRatio(data: RDD[(String, Double)], coll: MongoCollection): Unit = {
+    coll.drop()
     data.collect()
-      .foreach(x => collRatio.save(utils.dbObjWithDouble(x._1, x._2, "ratio")) )
+      .foreach(x => coll.save(utils.dbObjWithDouble(x._1, x._2, "ratio")) )
   }
 
-  def savePopulation(data: RDD[(String, Double)], collPopulation: MongoCollection): Unit = {
-    collPopulation.drop()
+  def savePopulation(data: RDD[(String, Double)], coll: MongoCollection): Unit = {
+    coll.drop()
     data.collect()
-      .foreach(x => collPopulation.save(utils.dbObjWithDouble(x._1, x._2, "population")) )
+      .foreach(x => coll.save(utils.dbObjWithDouble(x._1, x._2, "population")) )
   }
 
 

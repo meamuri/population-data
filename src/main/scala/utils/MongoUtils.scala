@@ -9,28 +9,28 @@ import org.apache.spark.rdd.RDD
 /**
   * Некоторый функционал по работе с MongoDB
   */
-class MongoUtils {
+class MongoUtils(private val genInfo: String) {
 
-  def dbObjWithList(country: String, cities: Iterable[City]): DBObject = {
-    val simple_cities = cities.map(c => Map("name" -> c.name, "population" -> c.population))
+  def dbObjWithList(generalName: String, info: Iterable[Map[String, Any]],
+                    infoName: String): DBObject = {
     val builder = MongoDBObject.newBuilder
-    builder += "country" -> country
-    builder += "cities" -> simple_cities
+    builder += genInfo -> generalName
+    builder += infoName -> info
     builder.result
   }
 
-  def dbObjWithList(country: String, cnt: Int): DBObject = {
+  def dbObjWithInt(generalName: String, info: Int, infoName: String): DBObject = {
     val builder = MongoDBObject.newBuilder
-    builder += "country" -> country
-    builder += "city_million_more_population" -> cnt
+    builder += genInfo -> generalName
+    builder += infoName -> info
     builder.result
   }
 
 
-  def dbObjWithDouble(country: String, info: Double, name: String): DBObject = {
+  def dbObjWithDouble(generalName: String, info: Double, infoName: String): DBObject = {
     val builder = MongoDBObject.newBuilder
-    builder += "country" -> country
-    builder += name -> info
+    builder += genInfo -> generalName
+    builder += infoName -> info
     builder.result
   }
 
