@@ -19,7 +19,7 @@ class Miner {
   def countriesWithTopN(cities: RDD[City], n: Int): RDD[(String, Iterable[City])] = {
     val countries = utils.groupCitiesByCountries(cities)
     countries.mapValues(cities_of_country => {
-      cities_of_country.toList.sortBy(city => city.population).take(n)
+      cities_of_country.toList.sortBy(city => city.population).reverse.take(n)
     })
   }
 
