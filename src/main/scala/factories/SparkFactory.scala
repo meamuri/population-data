@@ -11,6 +11,8 @@ object SparkFactory {
     .setMaster("local")
     .setAppName("dsr")
     .set("spark.cores.max", "4")
+    .set("spark.master", "local[4]")
+    .set("spark.executor.memory", "3g")
 
   private val sc = new SparkContext(conf)
   private val session = SparkSession.builder()
