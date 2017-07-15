@@ -17,7 +17,7 @@ object JobPopulation {
 
     val files = List(path + Resources.getBothFilename, path + Resources.getDiffFilename)
     if (!Common.folderContainFiles(files)){
-      println("По указанному пути нет необходимых для работы файлов!")
+      println(Resources.getIncorrectPathMsg)
       return
     }
 

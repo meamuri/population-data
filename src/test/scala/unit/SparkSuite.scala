@@ -82,4 +82,10 @@ class SparkSuite extends FunSuite with BeforeAndAfter {
     assert(australia.count() === 1 && australia.take(1).head._2 === 2)
   }
 
+  test("app should counting population for 5 countries ") {
+    val worker = new Miner
+    val res = worker.countriesPopulation(cities)
+    assert(res.count() === 5)
+  }
+
 }

@@ -2,6 +2,8 @@ package application
 
 import factories.{MongoFactory, Resources, SparkFactory}
 import helpers.Common
+import services.{Keeper, Miner}
+import utils.DataLoader
 
 import scala.util.Try
 
@@ -12,18 +14,20 @@ object JobTop {
 
     val files = List(path + Resources.getBothFilename, path + Resources.getDiffFilename)
     if (!Common.folderContainFiles(files)){
-      println("По указанному пути нет необходимых для работы файлов!")
+      println(Resources.getIncorrectPathMsg)
       return
     }
 
-//    val loader = new DataLoader(path)
-//
-//    val all_df = loader.loadDataWithBothSexes(SparkFactory.getSparkSession)
-//    val worker = new SparkUtils(all_df, year)
-//    val keeper = new MongoUtils
-//
-//    val top5 = worker.getTop5cities
-//    keeper.saveTop5(top5, MongoFactory.getTopCollection)
+    val loader = new DataLoader
+
+    val dataFrame = loader.loadData(files.head, SparkFactory.getSparkSession)
+    val cities = loader.selectBothRows(dataFrame, year)
+
+    val worker = new Miner
+    val res = worker.countriesWithTopN(cities, Resources.getTop)
+
+    val saver = new Keeper("country")
+    saver.saveTop(res, MongoFactory.getTopCollection)
 
     MongoFactory.closeConnection()
     SparkFactory.closeSession()
