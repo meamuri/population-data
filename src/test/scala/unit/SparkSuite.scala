@@ -6,6 +6,7 @@ import helpers.Common
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.DataFrame
 import org.scalatest.{BeforeAndAfter, FunSuite}
+import services.Miner
 import utils.{DataLoader, DataUtils, MongoUtils, SparkUtils}
 
 import scala.util.Try
@@ -54,5 +55,31 @@ class SparkSuite extends FunSuite with BeforeAndAfter {
     assert(target(0).year === 2009)
   }
 
+  test("data-set contain 3 country with million more population") {
+    // belarus and brazil -- they have not million more population cities
+    val res = cities.filter(city => city.population > 1000*1000)
+                  .map(city => (city.country, city))
+                  .groupByKey()
+    assert(res.count() === 3)
+  }
+
+  test("million more search result does not contain belarus record"){
+    val res = cities.filter(city => city.population > 1000*1000)
+      .map(city => (city.country, city))
+    val empty = res.filter(city => city._1 == "Belarus")
+    assert(empty.count() === 0)
+    val brazil = res.filter(city => city._1 == "Brazil")
+    assert(brazil.count() === 0)
+  }
+
+  test("my library func works correctly"){
+    val worker = new Miner
+    val res = worker.countCitiesWithPopulationMoreThan(cities, 1000)
+    assert(res.count() === 3)
+    val belarus_records = res.filter(pair => pair._1 == "Belarus").count
+    assert(belarus_records === 0)
+    val australia = res.filter(pair => pair._1 == "Australia")
+    assert(australia.count() === 1 && australia.take(1).head._2 === 2)
+  }
 
 }

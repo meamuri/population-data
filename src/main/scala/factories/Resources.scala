@@ -33,5 +33,5 @@ object Resources {
 
   def getBothPath: String = getDataPath + getBothFilename
   def getDiffPath: String = getDataPath + getDiffFilename
-
+  def getIncorrectPathMsg: String = config.getString("err-incorrect-path")
 }

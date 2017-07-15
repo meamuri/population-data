@@ -17,7 +17,7 @@ object JobMillionaires {
 
     val files = List(path + Resources.getBothFilename, path + Resources.getDiffFilename)
     if (!Common.folderContainFiles(files)){
-      println("По указанному пути нет необходимых для работы файлов!")
+      println(Resources.getIncorrectPathMsg)
       return
     }
 
@@ -26,15 +26,11 @@ object JobMillionaires {
     val dataFrame = loader.loadData(files.head, SparkFactory.getSparkSession)
     val cities = loader.selectBothRows(dataFrame, year)
 
-    cities.take(5).foreach(c => println(c))
-    println(cities.count())
-
     val worker = new Miner
-    val million_population_cities = worker.countCitiesWithPopulationMoreThan(cities, Resources.getLevel)
-
+    val res = worker.countCitiesWithPopulationMoreThan(cities, Resources.getLevel)
 
     val saver = new MongoUtils
-    saver.saveMillionaires(million_population_cities, MongoFactory.getMillionairesCollection)
+    saver.saveMillionaires(res, MongoFactory.getMillionairesCollection)
 
     MongoFactory.closeConnection()
     SparkFactory.closeSession()
