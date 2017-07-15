@@ -7,7 +7,7 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.DataFrame
 import org.scalatest.{BeforeAndAfter, FunSuite}
 import services.Miner
-import utils.{DataLoader, DataUtils, MongoUtils, SparkUtils}
+import utils.DataLoader
 
 import scala.util.Try
 

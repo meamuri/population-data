@@ -2,7 +2,6 @@ package application
 
 import factories.{MongoFactory, Resources, SparkFactory}
 import helpers.Common
-import utils.{DataLoader, MongoUtils, SparkUtils}
 
 import scala.util.Try
 

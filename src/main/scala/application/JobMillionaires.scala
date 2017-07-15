@@ -3,7 +3,7 @@ package application
 import factories.{MongoFactory, Resources, SparkFactory}
 import helpers.Common
 import services.{Keeper, Miner}
-import utils.{DataLoader, MongoUtils, SparkUtils}
+import utils.DataLoader
 
 import scala.util.Try
 
@@ -29,7 +29,7 @@ object JobMillionaires {
     val worker = new Miner
     val res = worker.countCitiesWithPopulationMoreThan(cities, Resources.getLevel)
 
-    val saver = new MongoUtils
+    val saver = new Keeper("country")
     saver.saveMillionaires(res, MongoFactory.getMillionairesCollection)
 
     MongoFactory.closeConnection()
