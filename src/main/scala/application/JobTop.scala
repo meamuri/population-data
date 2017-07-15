@@ -17,14 +17,14 @@ object JobTop {
       return
     }
 
-    val loader = new DataLoader(path)
-
-    val all_df = loader.loadDataWithBothSexes(SparkFactory.getSparkSession)
-    val worker = new SparkUtils(all_df, year)
-    val keeper = new MongoUtils
-
-    val top5 = worker.getTop5cities
-    keeper.saveTop5(top5, MongoFactory.getTopCollection)
+//    val loader = new DataLoader(path)
+//
+//    val all_df = loader.loadDataWithBothSexes(SparkFactory.getSparkSession)
+//    val worker = new SparkUtils(all_df, year)
+//    val keeper = new MongoUtils
+//
+//    val top5 = worker.getTop5cities
+//    keeper.saveTop5(top5, MongoFactory.getTopCollection)
 
     MongoFactory.closeConnection()
     SparkFactory.closeSession()

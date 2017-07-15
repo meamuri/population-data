@@ -20,14 +20,14 @@ object JobPopulation {
       return
     }
 
-    val loader = new DataLoader(path)
-
-    val all_df = loader.loadDataWithBothSexes(SparkFactory.getSparkSession)
-    val worker = new SparkUtils(all_df, year)
-    val keeper = new MongoUtils
-
-    val population_by_countries = worker.getCountiesPopulation
-    keeper.savePopulation(population_by_countries, MongoFactory.getPopulationCollection)
+//    val loader = new DataLoader(path)
+//
+//    val all_df = loader.loadDataWithBothSexes(SparkFactory.getSparkSession)
+//    val worker = new SparkUtils(all_df, year)
+//    val keeper = new MongoUtils
+//
+//    val population_by_countries = worker.getCountiesPopulation
+//    keeper.savePopulation(population_by_countries, MongoFactory.getPopulationCollection)
 
     MongoFactory.closeConnection()
     SparkFactory.closeSession()

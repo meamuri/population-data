@@ -26,6 +26,9 @@ object JobMillionaires {
     val dataFrame = loader.loadData(files.head, SparkFactory.getSparkSession)
     val cities = loader.selectBothRows(dataFrame, year)
 
+    cities.take(5).foreach(c => println(c))
+    println(cities.count())
+
     //    val million_population_cities = worker.getCitiesWithMillionPopulation
 
 

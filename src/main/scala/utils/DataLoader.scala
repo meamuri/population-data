@@ -41,14 +41,14 @@ class DataLoader {
   }
 
   private def selectUsefulRows(data: RDD[City], year: Int): RDD[City] = {
-    val tmp = data.map(city => (city.name, city.copy()))
+    val tmp = data.map(city => (city.name, city))
       .groupByKey()
     val res = if (year == -1) {
       tmp.mapValues(cities => cities.maxBy(_.year))
     } else { // если нашли указанный год, берем за этот год, в противном случае самую свежую запись
       tmp.mapValues(cities => cities.find(city => city.year == year).getOrElse(cities.maxBy(_.year)))
     }
-    res.map(pair => pair._2.copy())
+    res.map(pair => pair._2)
   }
 
 

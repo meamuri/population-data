@@ -20,14 +20,14 @@ object JobRatio {
       return
     }
 
-    val loader = new DataLoader(path)
+//    val loader = new DataLoader(path)
 
-    val all_df = loader.loadDataWithBothSexes(SparkFactory.getSparkSession)
-    val worker = new SparkUtils(all_df, year)
-    val keeper = new MongoUtils
-
-    val ratio = worker.getRatio(loader.loadDataWithDiffSexes(SparkFactory.getSparkSession))
-    keeper.saveRatio(ratio, MongoFactory.getRatioCollection)
+//    val all_df = loader.loadDataWithBothSexes(SparkFactory.getSparkSession)
+//    val worker = new SparkUtils(all_df, year)
+//    val keeper = new MongoUtils
+//
+//    val ratio = worker.getRatio(loader.loadDataWithDiffSexes(SparkFactory.getSparkSession))
+//    keeper.saveRatio(ratio, MongoFactory.getRatioCollection)
 
     MongoFactory.closeConnection()
     SparkFactory.closeSession()
