@@ -2,6 +2,8 @@ package application
 
 import factories.{MongoFactory, Resources, SparkFactory}
 import helpers.Common
+import services.{Keeper, Miner}
+import utils.DataLoader
 
 import scala.util.Try
 
@@ -19,14 +21,16 @@ object JobPopulation {
       return
     }
 
-//    val loader = new DataLoader(path)
-//
-//    val all_df = loader.loadDataWithBothSexes(SparkFactory.getSparkSession)
-//    val worker = new SparkUtils(all_df, year)
-//    val keeper = new MongoUtils
-//
-//    val population_by_countries = worker.getCountiesPopulation
-//    keeper.savePopulation(population_by_countries, MongoFactory.getPopulationCollection)
+    val loader = new DataLoader
+
+    val dataFrame = loader.loadData(files.head, SparkFactory.getSparkSession)
+    val cities = loader.selectBothRows(dataFrame, year)
+
+    val worker = new Miner
+    val res = worker.countriesPopulation(cities)
+
+    val saver = new Keeper("country")
+    saver.savePopulation(res, MongoFactory.getPopulationCollection)
 
     MongoFactory.closeConnection()
     SparkFactory.closeSession()

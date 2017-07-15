@@ -18,7 +18,7 @@ object Resources {
   def getDbName: String = config.getString("db.name")
 
   def getCollMillionaires: String = config.getString("db.collections.millionaires")
-  def getCollPopulation: String = config.getString("db.collections.popultaion")
+  def getCollPopulation: String = config.getString("db.collections.population")
   def getCollRatio: String = config.getString("db.collections.ratio")
   def getCollTop: String = config.getString("db.collections.top")
 

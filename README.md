@@ -22,11 +22,18 @@ sudo service mongod start
 в зависимости от задачи выполните одну из команд:
 
 ```bash
-$ sbt "run-main application.JobMillionaires data -1"
-$ sbt "run-main application.JobPopultaion data -1"
-$ sbt "run-main application.JobRatio data -1"
-$ sbt "run-main application.JobTop data -1"
+$ sbt "run-main application.JobMillionaires"
+$ sbt "run-main application.JobPopultaion"
+$ sbt "run-main application.JobRatio"
+$ sbt "run-main application.JobTop"
 ```
+
+Запуская любой из модулей, можно указать специфические параметры, например:
+```bash
+$ sbt "run-main application.JobTop resources/data -1"
+```
+где первый параметр -- путь, в котором искать файлы, 
+а второй -- год, за который следует отбирать записи
 
 Для запуска тестов:
 ```bash
