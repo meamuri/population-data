@@ -17,10 +17,15 @@
 sudo service mongod start
 ```
 
-### Запуск приложения:
+### Запуск приложения
+
+в зависимости от задачи выполните одну из команд:
 
 ```bash
-$ sbt "run-main application.Job data -1"
+$ sbt "run-main application.JobMillionaires data -1"
+$ sbt "run-main application.JobPopultaion data -1"
+$ sbt "run-main application.JobRatio data -1"
+$ sbt "run-main application.JobTop data -1"
 ```
 
 Для запуска тестов:
@@ -34,5 +39,6 @@ $ sbt test
 $ mongo
 > use dsr
 > show collections
-> db.<collection_name>.find() # где <collection_name>, например, ratio
+> db.<collection_name>.find() 
+# где <collection_name>, например, ratio
 ```
