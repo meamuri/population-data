@@ -29,11 +29,12 @@ object JobMillionaires {
     cities.take(5).foreach(c => println(c))
     println(cities.count())
 
-    //    val million_population_cities = worker.getCitiesWithMillionPopulation
+    val worker = new Miner
+    val million_population_cities = worker.countCitiesWithPopulationMoreThan(cities, Resources.getLevel)
 
 
-    val saver = new Keeper
-    //    keeper.saveMillionaires(million_population_cities, MongoFactory.getMillionairesCollection)
+    val saver = new MongoUtils
+    saver.saveMillionaires(million_population_cities, MongoFactory.getMillionairesCollection)
 
     MongoFactory.closeConnection()
     SparkFactory.closeSession()
