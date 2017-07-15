@@ -15,7 +15,7 @@ object MongoFactory {
 
   def getRatioCollection: MongoCollection = db(Resources.getCollRatio)
   def getTopCollection: MongoCollection = db(Resources.getCollTop)
-  def getPopulationCollection: MongoCollection = db(Resources.getCollPopultaion)
+  def getPopulationCollection: MongoCollection = db(Resources.getCollPopulation)
   def getMillionairesCollection: MongoCollection = db(Resources.getCollMillionaires)
 
   def closeConnection(): Unit = {

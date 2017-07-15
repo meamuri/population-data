@@ -18,7 +18,7 @@ object Resources {
   def getDbName: String = config.getString("db.name")
 
   def getCollMillionaires: String = config.getString("db.collections.millionaires")
-  def getCollPopultaion: String = config.getString("db.collections.popultaion")
+  def getCollPopulation: String = config.getString("db.collections.popultaion")
   def getCollRatio: String = config.getString("db.collections.ratio")
   def getCollTop: String = config.getString("db.collections.top")
 
@@ -27,4 +27,11 @@ object Resources {
 
   def getDbServer: String = config.getString("db.server")
   def getDbPort: Int = config.getInt("db.port")
+
+  def getBothFilename: String = config.getString("both-filename")
+  def getDiffFilename: String = config.getString("diff-filename")
+
+  def getBothPath: String = getDataPath + getBothFilename
+  def getDiffPath: String = getDataPath + getDiffFilename
+
 }
