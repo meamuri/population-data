@@ -15,15 +15,16 @@ object JobRatio {
     val path = if (args.length == 0) { Resources.getDataPath } else { args(0) }
     val year = if (args.length < 2) { Resources.getYear } else { Try(args(1).toInt).getOrElse(-1) }
 
-    val files = List(path + Resources.getBothFilename, path + Resources.getDiffFilename)
-    if (!Common.folderContainFiles(files)){
+    val fileBoth = path + Resources.getBothFilename
+    val fileDiff = path + Resources.getDiffFilename
+    if (!Common.folderContainFiles(Iterable(fileBoth, fileDiff))){
       println(Resources.getIncorrectPathMsg)
       return
     }
 
     val loader = new DataLoader
 
-    val dataFrame = loader.loadData(files(1), SparkFactory.getSparkSession)
+    val dataFrame = loader.loadData(fileDiff, SparkFactory.getSparkSession)
     val cities = loader.selectDiffRows(dataFrame, year)
 
     val worker = new Miner
