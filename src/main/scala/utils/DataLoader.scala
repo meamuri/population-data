@@ -1,81 +1,55 @@
 package utils
 
-import java.io.File
-
+import dao.{City, PartOfPeople}
+import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
+import scala.util.Try
 
-/**
-  * Загрузчик данных из файлов csv
-  * Перед загрузкой данных, необходимо проверить наличие файлов
-  * функцией checkWorkFolder.
-  * В случае возвращения функцией неудачного результата,
-  * попытки загрузить данные приведут к исключительным ситуациям
-  */
-class DataLoader(val basePath: String = "data") {
-  private val fileBoth = basePath + "/unsd-citypopulation-year-both.csv"
-  private val fileDiff = basePath + "/unsd-citypopulation-year-fm.csv"
 
-  /**
-    * Загружает данные с информацией о населении обоих полов.
-    *
-    * Обертка над функцией loadData
-    * позволяющая абстрагироваться от передачи ей логического параметра,
-    * определяющего, какой файл загружать
-    * @param sparkSession сессия работы библиотеки Spark, с помощью которой
-    *                     будет произведено считывание данных CSV файла
-    * @return функция возвращает набор данных из соответствующего файла
-    *         в виде DataFrame
-    */
-  def loadDataWithBothSexes(sparkSession: SparkSession): DataFrame = {
-    loadData(isBoth = true, sparkSession)
-  }
-
-  /**
-    * Загружает данные с информацией о населении,
-    * где данные о разных полах представлены разными строками данных.
-    *
-    * Обертка над функцией loadData
-    * позволяющая абстрагироваться от передачи ей логического параметра,
-    * определяющего, какой файл загружать
-    * @param sparkSession сессия работы библиотеки Spark, с помощью которой
-    *                     будет произведено считывание данных CSV файла
-    * @return функция возвращает набор данных из соответствующего файла
-    *         в виде DataFrame
-    */
-  def loadDataWithDiffSexes(sparkSession: SparkSession): DataFrame = {
-    loadData(isBoth = false, sparkSession)
-  }
-
-  /**
-    * Функция, которой необходимо воспользоваться перед загрузкой данных
-    * Функция осуществляет проверку, хранятся ли в директории, ассоциированной
-    * с объектом-загрузчиком, необходимые для работы файлы
-    * @return
-    */
-  def checkWorkFolder(): Boolean = {
-    val file_with_both_data = new File(fileBoth)
-    val file_with_diff_data = new File(fileDiff)
-    file_with_both_data.exists() && file_with_diff_data.exists()
-  }
-
-  /**
-    * Функция загрузки данных из csv файлов, хранящихся в каталоге проекта
-    * @param isBoth логическая переменная, пределяющая,
-    *               нужно ли загружать данные обоих полов, или нет
-    * @param sparkSession сессия работы библиотеки Spark, с помощью которой
-    *                     будет произведено считывание данных CSV файла
-    * @return функция возвращает набор данных из соответствующего файла
-    *         в виде DataFrame
-    */
-  private def loadData(isBoth: Boolean, sparkSession: SparkSession):
-  DataFrame = {
-    val path =  if (isBoth) { fileBoth } else { fileDiff }
-    val dataFrame = sparkSession.read
+class DataLoader {
+  def loadData(path: String, session: SparkSession):  DataFrame = {
+    val dataFrame = session.read
       .format("csv")
       .option("header", "true")
       .option("mode", "DROPMALFORMED")
       .csv(path)
     dataFrame
   }
+
+  def selectBothRows(data: DataFrame, year: Int): RDD[City] = {
+    val rows = selectUsefulColumns(data)
+    selectUsefulRows(rows, year)
+  }
+
+  def selectDiffRows(data: DataFrame, year: Int): RDD[City] = {
+    val rows = selectUsefulColumns(data)
+    selectUsefulRows(rows.filter(city => city.sex == 'm'), year)
+      .union(selectUsefulRows(rows.filter(city => city.sex == 'f'), year))
+  }
+
+  private def selectUsefulColumns(all_data: DataFrame): RDD[City] = {
+    all_data.select("Country or Area", "City", "Year", "Value", "Sex").rdd
+      .map(row => {
+        val country = Try(row(0).toString).getOrElse("null").replaceAll("\\.", " ")
+        val city_name = Try(row(1).toString).getOrElse("null").replaceAll("\\.", " ")
+        val year = Try(row(2).toString.toInt).getOrElse(-1)
+        val population = Try(row(3).toString.toDouble).getOrElse(0.0)
+        val sex = PartOfPeople.strToChar(Try(row(4).toString).getOrElse("b"))
+        City(country, city_name, year, population, sex)
+      })
+  }
+
+  private def selectUsefulRows(data: RDD[City], year: Int): RDD[City] = {
+    val tmp = data.map(city => (city.name, city.copy()))
+      .groupByKey()
+    val res = if (year == -1) {
+      tmp.mapValues(cities => cities.maxBy(_.year))
+    } else { // если нашли указанный год, берем за этот год, в противном случае самую свежую запись
+      tmp.mapValues(cities => cities.find(city => city.year == year).getOrElse(cities.maxBy(_.year)))
+    }
+    res.map(pair => pair._2.copy())
+  }
+
+
 }

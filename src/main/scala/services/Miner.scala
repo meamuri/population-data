@@ -1,0 +1,8 @@
+package services
+
+/**
+  *
+  */
+class Miner {
+
+}
