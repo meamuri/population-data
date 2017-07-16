@@ -26,13 +26,16 @@ object Job {
 
     val cities = loader.noSqlLoading(fileBoth, SparkFactory.getSparkContext, year)
 
+    cities.take(5).foreach(p => println(p))
+    println(cities.count())
+
     val worker = new Miner
-    val res = worker.countriesWithTopN(cities, Resources.getTop)
+    val res = worker.countriesWithTopN(cities, 1)
 
     res.take(10).foreach(row => println(row))
 
-    val saver = new Keeper("country")
-    saver.saveTop(res, MongoFactory.getTopCollection)
+//    val saver = new Keeper("country")
+//    saver.saveTop(res, MongoFactory.getTopCollection)
 
     MongoFactory.closeConnection()
     SparkFactory.closeSession()

@@ -42,7 +42,8 @@ class DataLoader {
   }
 
   private def selectUsefulRows(data: RDD[City], year: Int): RDD[City] = {
-    val tmp = data.map(city => (city.name, city))
+    val tmp = data
+      .map(city => (city.name, city))
       .groupByKey()
     val res = if (year == -1) {
       tmp.mapValues(cities => cities.maxBy(_.year))
@@ -55,14 +56,25 @@ class DataLoader {
   def noSqlLoading(path: String, sc: SparkContext, year: Int): RDD[City] = {
     val csv = sc.textFile(path)
     val data = csv.map(line => {
-      line.split(",").map(elem => elem.trim)
-    }) //lines in rows
+      var tmp_line: String = line
+      var pos_first_quotes = tmp_line.indexOf('"')
+      while (pos_first_quotes >= 0) {
+        val pos_comma = tmp_line.indexOf(",", pos_first_quotes)
+        val pos_second_quotes = tmp_line.indexOf('"', pos_first_quotes + 1)
+        if (pos_comma > pos_first_quotes && pos_comma < pos_second_quotes)
+          tmp_line = tmp_line.substring(0, pos_comma - 1) +
+              tmp_line.substring(pos_comma).replaceFirst(",", " ")
+        tmp_line = tmp_line.replaceFirst("\"", " ")
+        tmp_line = tmp_line.replaceFirst("\"", " ")
+        pos_first_quotes = tmp_line.indexOf('"')
+      }
+      tmp_line.split(",").map(elem => elem.trim)
+    })
     val header = data.take(1)(0)
-      .map(row => row.replaceAll("\\.", " ").replaceAll("\"", ""))
-      .zipWithIndex.toMap // we build our header with the first line
+      .zipWithIndex.toMap
     val rows = data.filter(line => {
-      line(header("Country or Area")).replaceAll("\\.", " ").replaceAll("\"", "") != "Country or Area"
-    }) // filter the header out
+      line(header("Country or Area")) != "Country or Area"
+    })
 
     val res = rows.map(line => {
       val country = line(header("Country or Area")).replaceAll("\\.", " ").replaceAll("\"", "")
@@ -78,12 +90,7 @@ class DataLoader {
         sex = sex
       )
     })
-
-    res.take(5).foreach(r => println(r))
-
     val filtered = selectUsefulRows(res, year)
-    filtered.take(5).foreach(p => println(p))
-
     filtered
   }
 
