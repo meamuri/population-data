@@ -1,6 +1,7 @@
 package utils
 
 import dao.{City, PartOfPeople}
+import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
@@ -51,5 +52,41 @@ class DataLoader {
     res.map(pair => pair._2)
   }
 
+  def noSqlLoading(path: String, sc: SparkContext, year: Int): RDD[City] = {
+    val csv = sc.textFile(path)
+    val data = csv.map(line => {
+      line.split(",").map(elem => elem.trim)
+    }) //lines in rows
+    val header = data.take(1)(0)
+      .map(row => row.replaceAll("\\.", " ").replaceAll("\"", ""))
+      .zipWithIndex.toMap // we build our header with the first line
+    val rows = data.filter(line => {
+      line(header("Country or Area")).replaceAll("\\.", " ").replaceAll("\"", "") != "Country or Area"
+    }) // filter the header out
+
+    val res = rows.map(line => {
+      val country = line(header("Country or Area")).replaceAll("\\.", " ").replaceAll("\"", "")
+      val city_name = line(header("City")).replaceAll("\\.", " ").replaceAll("\"", "")
+      val year = line(header("Year")).toInt
+      val population = line(header("Value")).toDouble
+      val sex = PartOfPeople.strToChar(line(header("Sex")))
+      City(
+        country = country,
+        name = city_name,
+        year = year,
+        population = population,
+        sex = sex
+      )
+    })
+
+    res.take(5).foreach(r => println(r))
+
+    val filtered = selectUsefulRows(res, year)
+    filtered.take(5).foreach(p => println(p))
+
+    filtered
+  }
 
 }
+
+
