@@ -23,19 +23,16 @@ object Job {
     }
 
     val loader = new DataLoader
-
-    val cities = loader.noSqlLoading(fileBoth, SparkFactory.getSparkContext, year)
-
-    cities.take(5).foreach(p => println(p))
-    println(cities.count())
+    val cities = loader.noSqlDiff(fileDiff, SparkFactory.getSparkContext, year)
+    val second_set = loader.noSqlBoth(fileBoth, SparkFactory.getSparkContext, year)
 
     val worker = new Miner
-    val res = worker.countriesWithTopN(cities, 1)
+    val res = worker.getRatio(cities)
+    val res_population = worker.countriesPopulation(second_set)
 
-    res.take(10).foreach(row => println(row))
-
-//    val saver = new Keeper("country")
-//    saver.saveTop(res, MongoFactory.getTopCollection)
+    val saver = new Keeper("country")
+    saver.saveRatio(res, MongoFactory.getRatioCollection)
+    saver.savePopulation(res_population, MongoFactory.getPopulationCollection)
 
     MongoFactory.closeConnection()
     SparkFactory.closeSession()

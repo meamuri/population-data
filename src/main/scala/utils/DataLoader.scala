@@ -53,7 +53,18 @@ class DataLoader {
     res.map(pair => pair._2)
   }
 
-  def noSqlLoading(path: String, sc: SparkContext, year: Int): RDD[City] = {
+  def noSqlBoth(path: String, sc: SparkContext, year: Int): RDD[City] = {
+    val info = noSqlLoading(path, sc, year)
+    selectUsefulRows(info, year)
+  }
+
+  def noSqlDiff(path: String, sc: SparkContext, year: Int): RDD[City] = {
+    val info = noSqlLoading(path, sc, year)
+    selectUsefulRows(info.filter(city => city.sex == 'm'), year)
+      .union(selectUsefulRows(info.filter(city => city.sex == 'f'), year))
+  }
+
+  private def noSqlLoading(path: String, sc: SparkContext, year: Int): RDD[City] = {
     val csv = sc.textFile(path)
     val data = csv.map(line => {
       var tmp_line: String = line
@@ -90,10 +101,8 @@ class DataLoader {
         sex = sex
       )
     })
-    val filtered = selectUsefulRows(res, year)
-    filtered
+    res
   }
-
 }
 
 
