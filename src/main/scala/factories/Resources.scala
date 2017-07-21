@@ -34,4 +34,8 @@ object Resources {
   def getBothPath: String = getDataPath + getBothFilename
   def getDiffPath: String = getDataPath + getDiffFilename
   def getIncorrectPathMsg: String = config.getString("err-incorrect-path")
+
+  def getSparkLocalConfig: String = config.getString("spark.master-config.local")
+  def getSparkCoreCountConfig: String = config.getString("spark.core-count")
+  def getSparkMemoryConfig: String = config.getString("spark.master-config.memory")
 }

@@ -10,9 +10,9 @@ object SparkFactory {
   private val conf = new SparkConf()
     .setMaster("local")
     .setAppName("dsr")
-    .set("spark.cores.max", "4")
-    .set("spark.master", "local[4]")
-    .set("spark.executor.memory", "3g")
+    .set("spark.cores.max", Resources.getSparkCoreCountConfig)
+    .set("spark.master", Resources.getSparkLocalConfig)
+    .set("spark.executor.memory", Resources.getSparkMemoryConfig)
 
   private val sc = new SparkContext(conf)
   private val session = SparkSession.builder()
