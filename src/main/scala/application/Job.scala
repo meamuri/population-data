@@ -5,8 +5,6 @@ import helpers.{Common, Conf}
 import services.{Keeper, Miner}
 import utils.DataLoader
 
-import scala.util.Try
-
 /**
   *
   */

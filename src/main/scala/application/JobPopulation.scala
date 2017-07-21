@@ -1,19 +1,18 @@
 package application
 
 import factories.{MongoFactory, Resources, SparkFactory}
-import helpers.Common
+import helpers.{Common, Conf}
 import services.{Keeper, Miner}
 import utils.DataLoader
-
-import scala.util.Try
 
 /**
   *
   */
 object JobPopulation {
   def main(args: Array[String]) {
-    val path = if (args.length == 0) { Resources.getDataPath } else { args(0) }
-    val year = if (args.length < 2) { Resources.getYear } else { Try(args(1).toInt).getOrElse(-1) }
+    val conf = new Conf(args)
+    val path = conf.getPath
+    val year = conf.getYear
 
     val fileBoth = path + Resources.getBothFilename
     val fileDiff = path + Resources.getDiffFilename
