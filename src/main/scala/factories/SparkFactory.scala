@@ -8,10 +8,9 @@ import org.apache.spark.sql.SparkSession
   */
 object SparkFactory {
   private val conf = new SparkConf()
-    .setMaster("local")
+    .setMaster(Resources.getSparkLocalConfig)
     .setAppName("dsr")
     .set("spark.cores.max", Resources.getSparkCoreCountConfig)
-    .set("spark.master", Resources.getSparkLocalConfig)
     .set("spark.executor.memory", Resources.getSparkMemoryConfig)
 
   private val sc = new SparkContext(conf)
